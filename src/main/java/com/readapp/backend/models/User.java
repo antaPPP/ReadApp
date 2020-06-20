@@ -16,7 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @Column(name = "password")
     private String password;
@@ -47,6 +47,8 @@ public class User {
 
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public User(){}
 
     public User(String password, String countryCode, String mobile, boolean blocked, String permissions, Profile profile, Timestamp createdAt, Timestamp updatedAt) {
         this.password = password;
@@ -86,11 +88,11 @@ public class User {
         return this;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public User setId(String id) {
+    public User setId(Long id) {
         this.id = id;
         return this;
     }

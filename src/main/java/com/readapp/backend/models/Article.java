@@ -17,7 +17,7 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -50,11 +50,11 @@ public class Article {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public Article setId(String id) {
+    public Article setId(Long id) {
         this.id = id;
         return this;
     }

@@ -1,19 +1,12 @@
 package com.readapp.backend.services;
 
 import com.readapp.backend.models.User;
-import lombok.Getter;
-import lombok.Setter;
+import com.readapp.backend.models.utils.SignUpForm;
 
-@Getter
-@Setter
-class SignUpForm {
-    private String countryCode;
-    private String mobile;
-    private String verificationCode;
-    private String password;
-}
 
 public interface AuthService {
     User signUp(SignUpForm form);
+    void requestVerificationCode(String countryCode, String mobile);
+    boolean verifyCode(String countryCode, String mobile, String code);
     User createUser(User user);
 }

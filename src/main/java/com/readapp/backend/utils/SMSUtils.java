@@ -15,7 +15,9 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import java.util.concurrent.Future;
 
 public class SMSUtils {
+
     public static Future<String> sendVerificationSMS(SMSForm form) {
+        System.out.println(AliyunConfig.ACCESS_KEY_ID);
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", AliyunConfig.ACCESS_KEY_ID, AliyunConfig.ACCESS_KEY_SECRET);
         IAcsClient client = new DefaultAcsClient(profile);
 
@@ -26,8 +28,8 @@ public class SMSUtils {
         request.setSysAction("SendSms");
         request.putQueryParameter("RegionId", "cn-hangzhou");
         request.putQueryParameter("PhoneNumbers", form.getMobile());
-        request.putQueryParameter("SignName", "111");
-        request.putQueryParameter("TemplateCode", "111");
+        request.putQueryParameter("SignName", AliyunConfig.SIGN_NAME);
+        request.putQueryParameter("TemplateCode", AliyunConfig.VERIFICATION_SMS_TEMPLATE);
         request.putQueryParameter("TemplateParam", "{\"code\":" + "\"" + form.getCode() + "\"" +
                 "}");
         try {

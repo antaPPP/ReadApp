@@ -9,20 +9,20 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(name = "user_tags", joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "user_tags", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<User> users;
 
     @Column(name = "content")
     private String content;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public Tag setId(String id) {
+    public Tag setId(Long id) {
         this.id = id;
         return this;
     }
