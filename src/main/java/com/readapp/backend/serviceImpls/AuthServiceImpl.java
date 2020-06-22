@@ -6,6 +6,7 @@ import com.readapp.backend.exceptions.InconsistantParamsException;
 import com.readapp.backend.exceptions.InvalidSecretException;
 import com.readapp.backend.models.Profile;
 import com.readapp.backend.models.User;
+import com.readapp.backend.models.http.AuthForm;
 import com.readapp.backend.models.utils.SMSForm;
 import com.readapp.backend.models.utils.SignUpForm;
 import com.readapp.backend.services.AuthService;
@@ -71,13 +72,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String loginByPassword(String countryCode, String mobile, String password) {
+    public AuthForm loginByPassword(String countryCode, String mobile, String password) {
         User user = userDao.findByMobile(countryCode, mobile);
         if (user == null || !user.getPassword().equals(password)) {
             throw new InvalidSecretException();
         }
 
-        return JWTUtil.sign(String.valueOf(user.getId()), user.getPassword());
+        return new AuthForm().setId(user.getId()).setToken(JWTUtil.sign(String.valueOf(user.getId()), user.getPassword()));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.readapp.backend.controllers;
 
+import com.readapp.backend.models.http.AuthForm;
 import com.readapp.backend.models.http.HttpStatus;
 import com.readapp.backend.models.http.Response;
 import com.readapp.backend.models.utils.SignUpForm;
@@ -42,29 +43,29 @@ public class AuthController {
                             .setMobile(mobile)
                             .setPassword(password)
                             .setVerificationCode(verificationCode);
-        String code = "";
+        AuthForm result = null;
         try {
             authService.signUp(form);
-            code = authService.loginByPassword(countryCode, mobile, password);
+            result = authService.loginByPassword(countryCode, mobile, password);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
-        return Response.success(code);
+        return Response.success(result);
     }
 
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
     public Response loginByPassword(@RequestParam("countryCode") String countryCode,
                           @RequestParam("mobile") String mobile,
                           @RequestParam("password") String password){
-        String token = "";
+        AuthForm form = null;
         try {
-            token = authService.loginByPassword(countryCode, mobile, password);
+            form = authService.loginByPassword(countryCode, mobile, password);
         } catch (Exception e){
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
-        return Response.success(token);
+        return Response.success(form);
     }
 
     @RequestMapping(value = "/error/401", method = RequestMethod.GET)
