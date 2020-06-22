@@ -1,6 +1,5 @@
 package com.readapp.backend.config;
 
-import com.readapp.backend.exceptions.TokenExpiredException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 

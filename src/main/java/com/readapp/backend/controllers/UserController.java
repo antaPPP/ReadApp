@@ -7,7 +7,6 @@ import com.readapp.backend.modules.annotations.AutoRefreshToken;
 import com.readapp.backend.services.UserService;
 import com.readapp.backend.utils.JSONUtils;
 import com.readapp.backend.utils.JWTUtil;
-import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

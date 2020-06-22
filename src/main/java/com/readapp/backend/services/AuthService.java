@@ -3,7 +3,6 @@ package com.readapp.backend.services;
 import com.readapp.backend.models.User;
 import com.readapp.backend.models.http.AuthForm;
 import com.readapp.backend.models.utils.SignUpForm;
-import com.readapp.backend.security.JWTToken;
 
 
 public interface AuthService {

@@ -8,11 +8,9 @@ import com.readapp.backend.models.Tag;
 import com.readapp.backend.models.User;
 import com.readapp.backend.models.utils.ProfileForm;
 import com.readapp.backend.services.UserService;
-import com.readapp.backend.utils.JSONUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;

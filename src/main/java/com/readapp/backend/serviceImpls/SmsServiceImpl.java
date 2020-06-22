@@ -4,8 +4,6 @@ import com.readapp.backend.exceptions.SMSException;
 import com.readapp.backend.models.utils.SMSForm;
 import com.readapp.backend.services.SmsService;
 import com.readapp.backend.utils.RNG;
-import com.readapp.backend.utils.SMSUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service(value = "smsService")

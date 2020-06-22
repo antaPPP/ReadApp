@@ -1,7 +1,6 @@
 package com.readapp.backend.security.realm;
 
 import com.readapp.backend.dao.UserDao;
-import com.readapp.backend.exceptions.TokenExpiredException;
 import com.readapp.backend.models.User;
 import com.readapp.backend.security.JWTToken;
 import com.readapp.backend.utils.JWTUtil;

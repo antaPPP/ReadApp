@@ -4,7 +4,6 @@ package com.readapp.backend.models;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Table(name = "profile")
 @EntityListeners(AuditingEntityListener.class)
