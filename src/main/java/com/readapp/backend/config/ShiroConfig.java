@@ -12,10 +12,13 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 @Configuration
 public class ShiroConfig {
@@ -74,6 +77,25 @@ public class ShiroConfig {
         // https://zhuanlan.zhihu.com/p/29161098
         defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
         return defaultAdvisorAutoProxyCreator;
+    }
+
+    @Bean
+    public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
+        Properties properties = new Properties();
+
+        /*未授权处理页*/
+        properties.setProperty("org.apache.shiro.authz.UnauthorizedException", "/api/v1/error/401");
+        /*身份没有验证*/
+        properties.setProperty("org.apache.shiro.authz.UnauthenticatedException", "/api/v1/error/401");
+        resolver.setExceptionMappings(properties);
+
+        return resolver;
+    }
+
+    @Bean(name = "exceptionHandler")
+    public HandlerExceptionResolver handlerExceptionResolver(){
+        return new GlobalExceptionResolver();
     }
 
     @Bean

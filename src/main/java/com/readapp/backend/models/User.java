@@ -36,7 +36,7 @@ public class User {
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH})
     private Profile profile;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "users")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Tag> tags;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")

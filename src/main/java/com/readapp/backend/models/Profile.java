@@ -27,6 +27,18 @@ public class Profile {
     @Column(name = "cover_url")
     private String coverUrl;
 
+    @OneToOne
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public Profile setUser(User user) {
+        this.user = user;
+        return this;
+    }
+
     public Long getId() {
         return id;
     }

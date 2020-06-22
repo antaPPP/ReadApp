@@ -1,6 +1,8 @@
 package com.readapp.backend;
 
+import com.readapp.backend.models.User;
 import com.readapp.backend.models.utils.SMSForm;
+import com.readapp.backend.services.UserService;
 import com.readapp.backend.utils.RNG;
 import com.readapp.backend.utils.RedisUtil;
 import com.readapp.backend.utils.SMSUtils;
@@ -14,6 +16,8 @@ class BackendApplicationTests {
 
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    UserService userService;
 
     @Test
     void contextLoads() {
@@ -37,6 +41,17 @@ class BackendApplicationTests {
     void testRedis() throws Exception {
         redisUtil.set("k", "v", 1000L);
         System.out.println((String)redisUtil.get("k"));
+    }
+
+    @Test
+    void testUser() throws Exception {
+        User user = userService.getUser(1L);
+        System.out.println(user.getTags().size());
+    }
+
+    @Test
+    void testTags() {
+        User user = userService.getUser(1L);
     }
 
 }

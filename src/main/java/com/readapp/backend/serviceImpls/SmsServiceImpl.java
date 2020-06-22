@@ -14,7 +14,8 @@ public class SmsServiceImpl implements SmsService {
     public String sendVerificationSMS(SMSForm form) throws SMSException {
         String code = RNG.generateVerificationCode(6);
         form.setCode(code);
-        SMSUtils.sendVerificationSMS(form);
+        System.out.println(code);
+        //SMSUtils.sendVerificationSMS(form);
         return code;
     }
 }

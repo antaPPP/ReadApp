@@ -11,7 +11,7 @@ import com.readapp.backend.models.utils.SignUpForm;
 import com.readapp.backend.services.AuthService;
 import com.readapp.backend.services.SmsService;
 import com.readapp.backend.utils.CoderUtils;
-import com.readapp.backend.utils.RNG;
+import com.readapp.backend.utils.JWTUtil;
 import com.readapp.backend.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,13 +61,37 @@ public class AuthServiceImpl implements AuthService {
         SMSForm form = new SMSForm();
         form.setMobile(countryCode.trim() + mobile.trim());
         String code = smsService.sendVerificationSMS(form);
-        redisUtil.set("verify." + countryCode.trim() + mobile.trim(), code, 600L);
+        redisUtil.set("verify." + countryCode + mobile, code, 600L);
     }
 
     @Override
     public boolean verifyCode(String countryCode, String mobile, String code) {
         String cachedCode = (String)redisUtil.get("verify." + countryCode + mobile);
         return cachedCode == null || !cachedCode.equals(code);
+    }
+
+    @Override
+    public String loginByPassword(String countryCode, String mobile, String password) {
+        User user = userDao.findByMobile(countryCode, mobile);
+        if (user == null || !user.getPassword().equals(password)) {
+            throw new InvalidSecretException();
+        }
+
+        return JWTUtil.sign(String.valueOf(user.getId()), user.getPassword());
+    }
+
+    @Override
+    public String loginBySms(String countryCode, String mobile, String code) {
+        String vcode = (String)redisUtil.get("verify." + countryCode + mobile);
+        if (!code.equals(vcode)) throw new InvalidSecretException();
+        User user = userDao.findByMobile(countryCode, mobile);
+        if (user == null) throw new InvalidSecretException();
+        return JWTUtil.sign(String.valueOf(user.getId()), user.getPassword());
+    }
+
+    @Override
+    public String refreshToken(String expiredToken) {
+        return null;
     }
 
     @Override

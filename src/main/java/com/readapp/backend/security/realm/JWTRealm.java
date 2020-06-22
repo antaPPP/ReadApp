@@ -1,6 +1,7 @@
 package com.readapp.backend.security.realm;
 
 import com.readapp.backend.dao.UserDao;
+import com.readapp.backend.exceptions.TokenExpiredException;
 import com.readapp.backend.models.User;
 import com.readapp.backend.security.JWTToken;
 import com.readapp.backend.utils.JWTUtil;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -38,8 +40,8 @@ public class JWTRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        String username = JWTUtil.getUsername(principals.toString());
-        User user = userDao.findByMobile(username.split(".")[0], username.split(".")[1]);
+        String id = JWTUtil.getUserId(principals.toString());
+        User user = userDao.findById(Long.parseLong(id)).get();
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.addRole(user.getPermissions());
         Set<String> permission = new HashSet<>(Arrays.asList(user.getPermissions().split(",")));
@@ -55,18 +57,23 @@ public class JWTRealm extends AuthorizingRealm {
         //Get token
         String token = (String) auth.getCredentials();
 
-        // 解密获得username，用于和数据库进行对比
-        String username = JWTUtil.getUsername(token);
-        if (username == null) {
+        // 解密获得id，用于和数据库进行对比
+        String id = JWTUtil.getUserId(token);
+        if (id == null) {
             throw new AuthenticationException("token invalid");
         }
 
-        User userBean = userDao.findByMobile(username.split(".")[0], username.split(".")[1]);
-        if (userBean == null) {
+        Optional<User> opt = userDao.findById(Long.parseLong(id));
+
+        if (!opt.isPresent()) {
             throw new AuthenticationException("User didn't existed!");
         }
 
-        if (! JWTUtil.verify(token, username, userBean.getPassword())) {
+        User userBean = opt.get();
+
+
+        if (! JWTUtil.verify(token, id, userBean.getPassword())) {
+
             throw new AuthenticationException("Username or password error");
         }
 

@@ -1,7 +1,6 @@
 package com.readapp.backend.models;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "tags")
@@ -11,9 +10,8 @@ public class Tag {
     @Column(name = "id")
     private Long id;
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(name = "user_tags", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<User> users;
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private User user;
 
     @Column(name = "content")
     private String content;
@@ -27,12 +25,12 @@ public class Tag {
         return this;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public Tag setUsers(List<User> users) {
-        this.users = users;
+    public Tag setUser(User user) {
+        this.user = user;
         return this;
     }
 
