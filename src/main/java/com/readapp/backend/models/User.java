@@ -42,6 +42,9 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
     private List<Article> articles;
 
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "members")
+    private List<Chat> chats;
+
     @CreationTimestamp
     private Timestamp createdAt;
 
@@ -49,6 +52,7 @@ public class User {
     private Timestamp updatedAt;
 
     public User(){}
+
 
     public User(String password, String countryCode, String mobile, boolean blocked, String permissions, Profile profile, Timestamp createdAt, Timestamp updatedAt) {
         this.password = password;
@@ -59,6 +63,15 @@ public class User {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<Chat> getChats() {
+        return chats;
+    }
+
+    public User setChats(List<Chat> chats) {
+        this.chats = chats;
+        return this;
     }
 
     public List<Article> getArticles() {
