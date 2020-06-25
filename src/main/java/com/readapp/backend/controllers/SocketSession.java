@@ -38,7 +38,7 @@ public class SocketSession {
 
     private static int onlineCount = 0;
     /**concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。*/
-    private static ConcurrentHashMap<String,SocketSession> webSocketMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String,SocketSession> webSocketMap = new ConcurrentHashMap<>();
     /**与某个客户端的连接会话，需要通过它来给客户端发送数据*/
     private Session session;
     /**接收userId*/
@@ -105,9 +105,9 @@ public class SocketSession {
      * 实现服务器主动推送
      */
     public void sendMessage(String message) throws IOException {
+        System.out.println(message);
         this.session.getBasicRemote().sendText(message);
     }
-
 
     public static synchronized int getOnlineCount() {
         return onlineCount;

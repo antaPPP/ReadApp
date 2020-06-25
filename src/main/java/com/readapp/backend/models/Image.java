@@ -1,10 +1,14 @@
 package com.readapp.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "images")
-public class Image {
+@JsonIgnoreProperties(value = {"message"})
+public class Image implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -19,7 +23,7 @@ public class Image {
     @Column(name = "width", nullable = false)
     private Double width;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Message message;
 
     public Message getMessage() {

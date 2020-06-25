@@ -1,16 +1,19 @@
 package com.readapp.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "messages")
 @EntityListeners(AuditingEntityListener.class)
-public class Message {
+@JsonIgnoreProperties(value = {"chat"})
+public class Message implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -31,7 +34,7 @@ public class Message {
     @ManyToOne
     private User toUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Chat chat;
 
     @CreationTimestamp

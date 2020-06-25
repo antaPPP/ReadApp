@@ -4,6 +4,17 @@ public class MessageForm {
     private String type;
     private String content;
     private Long toChat;
+    private Long fromUser;
+    private Long toUser;
+
+    public Long getToUser() {
+        return toUser;
+    }
+
+    public MessageForm setToUser(Long toUser) {
+        this.toUser = toUser;
+        return this;
+    }
 
     public Long getToChat() {
         return toChat;
@@ -11,6 +22,15 @@ public class MessageForm {
 
     public MessageForm setToChat(Long toChat) {
         this.toChat = toChat;
+        return this;
+    }
+
+    public Long getFromUser() {
+        return fromUser;
+    }
+
+    public MessageForm setFromUser(Long fromUser) {
+        this.fromUser = fromUser;
         return this;
     }
 

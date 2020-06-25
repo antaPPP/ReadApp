@@ -55,7 +55,8 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
-    public Response loginByPassword(@RequestParam("countryCode") String countryCode,
+    public Response loginByPassword(
+            @RequestParam("countryCode") String countryCode,
                           @RequestParam("mobile") String mobile,
                           @RequestParam("password") String password){
         AuthForm form = null;

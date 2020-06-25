@@ -1,17 +1,20 @@
 package com.readapp.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class User {
+@JsonIgnoreProperties(value = {"receivedMessages", "chats", "allChats"})
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +48,15 @@ public class User {
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "members")
     private List<Chat> chats;
 
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "allMembers")
+    private List<Chat> allChats;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
+    private List<Message> sentMessages;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "toUser")
+    private List<Message> receivedMessages;
+
     @CreationTimestamp
     private Timestamp createdAt;
 
@@ -63,6 +75,33 @@ public class User {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    public User setSentMessages(List<Message> sentMessages) {
+        this.sentMessages = sentMessages;
+        return this;
+    }
+
+    public List<Message> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public User setReceivedMessages(List<Message> receivedMessages) {
+        this.receivedMessages = receivedMessages;
+        return this;
+    }
+
+    public List<Chat> getAllChats() {
+        return allChats;
+    }
+
+    public User setAllChats(List<Chat> allChats) {
+        this.allChats = allChats;
+        return this;
     }
 
     public List<Chat> getChats() {

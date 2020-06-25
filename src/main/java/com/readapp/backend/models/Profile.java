@@ -1,14 +1,17 @@
 package com.readapp.backend.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "profile")
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Profile {
+@JsonIgnoreProperties(value = {"user"})
+public class Profile implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -26,7 +29,7 @@ public class Profile {
     @Column(name = "cover_url")
     private String coverUrl;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     public User getUser() {

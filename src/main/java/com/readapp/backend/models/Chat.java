@@ -16,11 +16,14 @@ public class Chat implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "chat_id")
     private Long id;
 
     @Column(name = "type", nullable = false)
     private String type;    // "Group" || "Direct"
+
+    @Column(name = "name")
+    private String name;
 
     @ManyToMany
     private List<User> members;
@@ -35,6 +38,15 @@ public class Chat implements Serializable {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public String getName() {
+        return name;
+    }
+
+    public Chat setName(String name) {
+        this.name = name;
+        return this;
+    }
 
     public Long getId() {
         return id;

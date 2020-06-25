@@ -1,10 +1,16 @@
 package com.readapp.backend;
 
 import com.readapp.backend.dao.ChatDao;
+import com.readapp.backend.dao.MessageDao;
 import com.readapp.backend.models.Chat;
+import com.readapp.backend.models.Message;
 import com.readapp.backend.models.User;
+import com.readapp.backend.models.http.MessageForm;
+import com.readapp.backend.models.utils.ChatPreviewInfo;
 import com.readapp.backend.models.utils.SMSForm;
+import com.readapp.backend.services.ChatService;
 import com.readapp.backend.services.UserService;
+import com.readapp.backend.utils.ChatUtils;
 import com.readapp.backend.utils.RNG;
 import com.readapp.backend.utils.RedisUtil;
 import com.readapp.backend.utils.SMSUtils;
@@ -12,11 +18,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@SpringBootTest
+@SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BackendApplicationTests {
 
     @Autowired
@@ -25,6 +34,12 @@ class BackendApplicationTests {
     UserService userService;
     @Autowired
     ChatDao chatDao;
+    @Autowired
+    ChatUtils chatUtils;
+    @Autowired
+    ChatService chatService;
+    @Autowired
+    MessageDao messageDao;
 
     @Test
     void contextLoads() {
@@ -46,8 +61,7 @@ class BackendApplicationTests {
 
     @Test
     void testRedis() throws Exception {
-        redisUtil.set("k", "v", 1000L);
-        System.out.println((String)redisUtil.get("k"));
+        redisUtil.del("chat." + 1L);
     }
 
     @Test
@@ -67,6 +81,26 @@ class BackendApplicationTests {
         list.add(new User().setId(1L));
         chatDao.save(new Chat().setMembers(list).setAllMembers(new ArrayList<>()).setMessages(new ArrayList<>()).setType("Direct"));
     }
+
+    @Test
+    void testMsg() throws Exception {
+
+        chatService.sendMessage(new MessageForm()
+                .setContent("Hello World! Read app!")
+                .setFromUser(1L)
+                .setToUser(1L)
+                .setToChat(1L)
+                .setType("text"));
+
+    }
+
+    @Test
+    void testChatMap() throws Exception {
+        Map<String, ChatPreviewInfo> rst = chatUtils.get(1L);
+        System.out.println(rst.get("1").getLastMessage().getContent());
+        System.out.println(rst.get("1").getUnreadCount());
+    }
+
 
 
 }
