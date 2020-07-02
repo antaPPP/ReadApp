@@ -9,6 +9,7 @@ import com.readapp.backend.models.http.MessageForm;
 import com.readapp.backend.models.utils.ChatPreviewInfo;
 import com.readapp.backend.models.utils.SMSForm;
 import com.readapp.backend.services.ChatService;
+import com.readapp.backend.services.FileService;
 import com.readapp.backend.services.UserService;
 import com.readapp.backend.utils.ChatUtils;
 import com.readapp.backend.utils.RNG;
@@ -40,6 +41,8 @@ class BackendApplicationTests {
     ChatService chatService;
     @Autowired
     MessageDao messageDao;
+    @Autowired
+    FileService fileService;
 
     @Test
     void contextLoads() {
@@ -101,6 +104,41 @@ class BackendApplicationTests {
         System.out.println(rst.get("1").getUnreadCount());
     }
 
+    @Test
+    void testQiniu() throws Exception {
+        System.out.println(fileService.getToken());
+    }
 
+    @Test
+    void testPagination() throws Exception {
+        userService.searchByKeyword("ick", 1, 10);
+    }
+
+    @Test
+    void testFollow() throws Exception {
+        userService.follow(1L, 2L);
+        User user = userService.getUser(1L);
+        User host = userService.getUser(2L);
+        System.out.println(user.getFollowCount());
+        System.out.println(host.getFollowerCount());
+    }
+
+    @Test
+    void testFollow2() throws Exception {
+        List<Long> list = userService.getFollowingIDs(1L);
+        System.out.println(list.get(0));
+    }
+
+    @Test
+    void testFindChat() throws Exception {
+        chatService.createDirectChat(1L, 2L);
+        System.out.println(chatService.getDirectChatByMembers(1L, 2L));
+    }
+
+    @Test
+    void testFindChatMembers() throws Exception {
+        List<User> members = chatDao.findMembersId(1L);
+        System.out.println(members.size());
+    }
 
 }

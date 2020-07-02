@@ -5,6 +5,7 @@ import com.readapp.backend.controllers.SocketSession;
 import com.readapp.backend.dao.ChatDao;
 import com.readapp.backend.dao.MessageDao;
 import com.readapp.backend.dao.UserDao;
+import com.readapp.backend.dto.MessageResponse;
 import com.readapp.backend.models.Chat;
 import com.readapp.backend.models.Message;
 import com.readapp.backend.models.User;
@@ -15,6 +16,8 @@ import com.readapp.backend.services.ChatService;
 import com.readapp.backend.utils.ChatUtils;
 import com.readapp.backend.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,10 @@ import java.util.*;
 
 @Service("chatService")
 public class ChatServiceImpl implements ChatService {
+
+    /**
+     * Client chat cycle: fetchAllEvents() -> Merge chat map -> getChatById -> Socket.onMessage -> Update chat
+     */
 
     @Autowired
     RedisUtil redisUtil;
@@ -57,10 +64,11 @@ public class ChatServiceImpl implements ChatService {
 
 //        message.getFromUser().getProfile().setUser(null);
         message.getFromUser().setProfile(null);
+        message.getChat().setAllMembers(null).setMembers(null);
 
         if (SocketSession.webSocketMap.containsKey(String.valueOf(form.getToUser()))) {
             SocketSession.webSocketMap.get(String.valueOf(form.getToUser())).sendMessage(
-                    JSONObject.toJSONString(new Event().setData(message).setType("message"))
+                    JSONObject.toJSONString(new Event().setData(new MessageResponse(message)).setType("message"))
             );
             System.out.println("Sending");
         } else {
@@ -69,8 +77,41 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
+
+    @Override
+    public Chat getDirectChatByMembers(Long fromUser, Long toUser) throws Exception {
+        User from = userDao.getOne(fromUser);
+        User to = userDao.getOne(toUser);
+        if (from == null || to == null) throw new NoSuchElementException();
+        for (Chat chat : from.getChats()) {
+            if (chat.getMembers().contains(to)) {
+                return chat;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<MessageResponse> findMessagesByChat(Long id, Long uid, int page, int size) throws Exception {
+
+        if (this.checkMembers(id, uid)) throw new NoSuchElementException();
+
+        Pageable pageable = PageRequest.of(page - 1,size);
+
+        List<MessageResponse> responses = new ArrayList<>();
+
+        for (Message message : messageDao.findMessagesByChat(new Chat().setId(id), pageable)) {
+            responses.add(new MessageResponse(message));
+        }
+
+        return responses;
+    }
+
     @Override
     public Chat createDirectChat(Long fromUser, Long toUser) throws Exception {
+
+        Chat chat = this.getDirectChatByMembers(fromUser, toUser);
+        if (chat != null) return chat;
 
         Optional<User> fromOptionalUser = userDao.findById(fromUser);
         Optional<User> toOptionalUser = userDao.findById(toUser);
@@ -82,7 +123,7 @@ public class ChatServiceImpl implements ChatService {
         User from = fromOptionalUser.get();
         User to = toOptionalUser.get();
 
-        Chat chat = new Chat();
+        chat = new Chat();
 
         chat.setAllMembers(new ArrayList<>());
         chat.setMembers(new ArrayList<>());
@@ -90,11 +131,11 @@ public class ChatServiceImpl implements ChatService {
         chat.setType("Direct");
         chat.setMessages(new ArrayList<>());
 
-        chat.getAllMembers().add(from);
-        chat.getAllMembers().add(to);
+        if (!chat.getAllMembers().contains(from)) chat.getAllMembers().add(from);
+        if (!chat.getAllMembers().contains(to)) chat.getAllMembers().add(to);
 
-        chat.getMembers().add(from);
-        chat.getMembers().add(to);
+        if (!chat.getMembers().contains(from)) chat.getMembers().add(from);
+        if (!chat.getMembers().contains(to)) chat.getMembers().add(to);
 
         chat = chatDao.save(chat);
 
@@ -109,5 +150,11 @@ public class ChatServiceImpl implements ChatService {
         if (chatMap == null) return new HashMap<>();
 
         return chatMap;
+    }
+
+    private boolean checkMembers(Long cid, Long uid) {
+        List<User> members = chatDao.findMembersId(cid);
+        if (members == null) return false;
+        return members.contains(new User().setId(uid));
     }
 }

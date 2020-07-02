@@ -50,6 +50,11 @@ public class AuthServiceImpl implements AuthService {
         user.setMobile(form.getMobile());
         user.setPassword(form.getPassword());
         user.setProfile(new Profile());
+        user.setLikeCount(0);
+        user.setArticleCount(0);
+        user.setAvgRateScore(0.0);
+        user.setFollowCount(0);
+        user.setFollowerCount(0);
         user.setPermissions("USER");
 
         userDao.save(user);

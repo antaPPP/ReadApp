@@ -1,8 +1,10 @@
 package com.readapp.backend.controllers;
 
+import com.alibaba.fastjson.JSONObject;
 import com.readapp.backend.config.WebSocketConfig;
 import com.readapp.backend.dao.UserDao;
 import com.readapp.backend.models.User;
+import com.readapp.backend.models.events.Event;
 import com.readapp.backend.services.UserService;
 import com.readapp.backend.utils.JWTUtil;
 import org.slf4j.Logger;
@@ -77,7 +79,7 @@ public class SocketSession {
         log.info("用户连接:"+userId+",当前在线人数为:" + getOnlineCount());
 
         try {
-            sendMessage("connect");
+            sendMessage(JSONObject.toJSONString(new Event().setType("connect").setData(null)));
         } catch (IOException e) {
             log.error("用户:"+userId+",网络异常!!!!!!");
         }
@@ -93,7 +95,7 @@ public class SocketSession {
             //从set中删除
             subOnlineCount();
             try {
-                sendMessage("disconnect");
+                sendMessage(JSONObject.toJSONString(new Event().setType("disconnect").setData(null)));
             } catch (IOException e) {
                 log.error("用户:"+userId+",网络异常!!!!!!");
             }

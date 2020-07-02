@@ -1,16 +1,62 @@
 package com.readapp.backend.dto;
 
+import com.readapp.backend.models.Message;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class MessageResponse {
+/**
+ * JSON:
+ * {
+ *     id,
+ *     type,
+ *     fromUser: {
+ *         id,
+ *     },
+ *     content,
+ *     image,
+ *     chat: {
+ *         id
+ *     },
+ * }
+ */
+public class MessageResponse implements Serializable {
     private Long id;
+    private Long fromChat;
     private String type;
-    private UserResponse fromUser;
+    private Long fromUser;
     private String content;
-    private ChatResponse chat;
     private ImageResponse image;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+
+    public MessageResponse(){}
+
+    public MessageResponse(@NotNull Message message) {
+        this.id = message.getId();
+        this.type = message.getType();
+        this.fromUser = message.getFromUser().getId();
+        this.fromChat = message.getChat().getId();
+        this.content = message.getContent();
+        if (message.getImage() != null) this.image = new ImageResponse(message.getImage());
+        this.createdAt = message.getCreatedAt();
+        this.updatedAt = message.getUpdatedAt();
+    }
+
+    public Long getFromChat() {
+        return fromChat;
+    }
+
+    public MessageResponse setFromChat(Long fromChat) {
+        this.fromChat = fromChat;
+        return this;
+    }
+
+    public MessageResponse setFromUser(Long fromUser) {
+        this.fromUser = fromUser;
+        return this;
+    }
 
     public Long getId() {
         return id;
@@ -30,13 +76,8 @@ public class MessageResponse {
         return this;
     }
 
-    public UserResponse getFromUser() {
+    public Long getFromUser() {
         return fromUser;
-    }
-
-    public MessageResponse setFromUser(UserResponse fromUser) {
-        this.fromUser = fromUser;
-        return this;
     }
 
     public String getContent() {
@@ -45,15 +86,6 @@ public class MessageResponse {
 
     public MessageResponse setContent(String content) {
         this.content = content;
-        return this;
-    }
-
-    public ChatResponse getChat() {
-        return chat;
-    }
-
-    public MessageResponse setChat(ChatResponse chat) {
-        this.chat = chat;
         return this;
     }
 

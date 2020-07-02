@@ -4,6 +4,7 @@ import com.readapp.backend.exceptions.SMSException;
 import com.readapp.backend.models.utils.SMSForm;
 import com.readapp.backend.services.SmsService;
 import com.readapp.backend.utils.RNG;
+import com.readapp.backend.utils.SMSUtils;
 import org.springframework.stereotype.Service;
 
 @Service(value = "smsService")
@@ -13,7 +14,7 @@ public class SmsServiceImpl implements SmsService {
         String code = RNG.generateVerificationCode(6);
         form.setCode(code);
         System.out.println(code);
-        //SMSUtils.sendVerificationSMS(form);
+        SMSUtils.sendVerificationSMS(form);
         return code;
     }
 }

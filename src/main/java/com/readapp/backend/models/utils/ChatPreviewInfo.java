@@ -1,5 +1,7 @@
 package com.readapp.backend.models.utils;
 
+import com.readapp.backend.dto.MessageResponse;
+import com.readapp.backend.dto.UserResponse;
 import com.readapp.backend.models.Message;
 
 import java.io.Serializable;
@@ -8,11 +10,21 @@ import java.sql.Timestamp;
 public class ChatPreviewInfo implements Serializable {
     private Long chatId;
     private int unreadCount;
-    private Message lastMessage;
+    private UserResponse user;
+    private MessageResponse lastMessage;
     private Timestamp lastMsgAt;
 
     public Long getChatId() {
         return chatId;
+    }
+
+    public UserResponse getUser() {
+        return user;
+    }
+
+    public ChatPreviewInfo setUser(UserResponse user) {
+        this.user = user;
+        return this;
     }
 
     public ChatPreviewInfo setChatId(Long chatId) {
@@ -29,11 +41,11 @@ public class ChatPreviewInfo implements Serializable {
         return this;
     }
 
-    public Message getLastMessage() {
+    public MessageResponse getLastMessage() {
         return lastMessage;
     }
 
-    public ChatPreviewInfo setLastMessage(Message lastMessage) {
+    public ChatPreviewInfo setLastMessage(MessageResponse lastMessage) {
         this.lastMessage = lastMessage;
         return this;
     }

@@ -1,5 +1,6 @@
 package com.readapp.backend.controllers;
 
+import com.readapp.backend.dto.ChatResponse;
 import com.readapp.backend.models.Chat;
 import com.readapp.backend.models.http.ChatForm;
 import com.readapp.backend.models.http.HttpStatus;
@@ -39,7 +40,7 @@ public class ChatController {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
-        return Response.success(new ChatForm(chat));
+        return Response.success(new ChatResponse(chat));
     }
 
     @RequestMapping(value = "/message", method = RequestMethod.POST)
@@ -50,6 +51,7 @@ public class ChatController {
         try {
             chatService.sendMessage(form);
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
         return Response.success(null);
@@ -76,6 +78,22 @@ public class ChatController {
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
         return Response.success(map);
+    }
+
+    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response findMessagesByChat(@RequestParam("id") Long id,
+                                       @RequestParam("page") int page,
+                                       @RequestParam("size") int size,
+                                       @RequestHeader("Authorization") String Authorization) {
+        try {
+            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+            return Response.success(chatService.findMessagesByChat(id, uid, page, size));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
     }
 
 }

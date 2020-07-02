@@ -1,5 +1,6 @@
 package com.readapp.backend.utils;
 
+import com.readapp.backend.dto.MessageResponse;
 import com.readapp.backend.models.Message;
 import com.readapp.backend.models.utils.ChatPreviewInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ public class ChatUtils {
             /*
             Create chat{${userId} -- ChatPreviewInfo} map if no userId is found in redis key set
              */
-
+            System.out.println("Creating new map entry: " + "chat." + message.getToUser().getId());
             Map<String, ChatPreviewInfo> map = new HashMap<>();
 
             map.put(String.valueOf(message.getChat().getId()), new ChatPreviewInfo()
                     .setChatId(message.getChat().getId())
-                    .setLastMessage(message)
+                    .setLastMessage(new MessageResponse(message))
                     .setLastMsgAt(message.getCreatedAt())
                     .setUnreadCount(1)
             );
@@ -40,6 +41,7 @@ public class ChatUtils {
             /*
             Get the map if previous ${userId} is found
              */
+            System.out.println("Found map entry: " + "chat." + message.getToUser().getId());
             Map<String, ChatPreviewInfo> chatMap = (Map<String, ChatPreviewInfo>) redisUtil.get("chat." + message.getToUser().getId());
             if (chatMap == null) chatMap = new HashMap<>();
             Long chatId = message.getChat().getId();
@@ -49,14 +51,14 @@ public class ChatUtils {
                  */
                 ChatPreviewInfo chat = new ChatPreviewInfo();
                 chat.setChatId(chatId);
-                chat.setLastMessage(message);
+                chat.setLastMessage(new MessageResponse(message));
                 chat.setUnreadCount(1);
                 chat.setLastMsgAt(message.getCreatedAt());
                 chatMap.put(String.valueOf(chatId), chat);
             } else {
                 ChatPreviewInfo chatPreviewInfo = chatMap.get(String.valueOf(chatId));
                 chatPreviewInfo.setUnreadCount(chatPreviewInfo.getUnreadCount() + 1);
-                chatPreviewInfo.setLastMessage(message);
+                chatPreviewInfo.setLastMessage(new MessageResponse(message));
                 chatPreviewInfo.setChatId(chatId);
                 chatPreviewInfo.setLastMsgAt(message.getCreatedAt());
                 chatMap.put(String.valueOf(chatId), chatPreviewInfo);

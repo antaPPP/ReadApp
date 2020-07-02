@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
@@ -57,6 +58,27 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toUser")
     private List<Message> receivedMessages;
 
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "follows")
+    private List<User> followers;
+
+    @ManyToMany
+    private List<User> follows;
+
+    @Column(name = "likeCount")
+    private int likeCount;
+
+    @Column(name = "follower_count")
+    private int followerCount;
+
+    @Column(name = "follow_count")
+    private int followCount;
+
+    @Column(name = "article_count")
+    private int articleCount;
+
+    @Column(name = "avg_rate_score")
+    private double avgRateScore;
+
     @CreationTimestamp
     private Timestamp createdAt;
 
@@ -75,6 +97,69 @@ public class User implements Serializable {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public User setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+        return this;
+    }
+
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public User setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+        return this;
+    }
+
+    public int getFollowCount() {
+        return followCount;
+    }
+
+    public User setFollowCount(int followCount) {
+        this.followCount = followCount;
+        return this;
+    }
+
+    public int getArticleCount() {
+        return articleCount;
+    }
+
+    public User setArticleCount(int articleCount) {
+        this.articleCount = articleCount;
+        return this;
+    }
+
+    public double getAvgRateScore() {
+        return avgRateScore;
+    }
+
+    public User setAvgRateScore(double avgRateScore) {
+        this.avgRateScore = avgRateScore;
+        return this;
+    }
+
+    public List<User> getFollowers() {
+        return followers;
+    }
+
+    public User setFollowers(List<User> followers) {
+        this.followers = followers;
+        return this;
+    }
+
+    public List<User> getFollows() {
+        return follows;
+    }
+
+    public User setFollows(List<User> follows) {
+        this.follows = follows;
+        return this;
     }
 
     public List<Message> getSentMessages() {
@@ -210,5 +295,17 @@ public class User implements Serializable {
     public User setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        User user = (User) o;
+        return user.getId().equals(this.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, password, countryCode, mobile, blocked, permissions, profile, tags, articles, chats, allChats, sentMessages, receivedMessages, createdAt, updatedAt);
     }
 }

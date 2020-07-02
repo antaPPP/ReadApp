@@ -2,20 +2,24 @@ package com.readapp.backend.models.utils;
 
 import com.readapp.backend.models.Profile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileForm {
-    private String nickname;
-    private String whatsup;
-    private String avatarUrl;
-    private String coverUrl;
-    private List<String> tags;
+    private String nickname = "";
+    private String whatsup = "";
+    private String avatarUrl = "";
+    private String coverUrl = "";
+    private List<String> tags = new ArrayList<>();
+
+    public ProfileForm(){}
 
     public ProfileForm(Profile profile) {
-        this.nickname = profile.getNickname();
-        this.whatsup = profile.getWhatsup();
-        this.avatarUrl = profile.getAvatarUrl();
-        this.coverUrl = profile.getCoverUrl();
+        if (profile == null) return;
+        if(profile.getNickname() != null) this.nickname = profile.getNickname();
+        if(profile.getWhatsup() != null) this.whatsup = profile.getWhatsup();
+        if(profile.getAvatarUrl() != null) this.avatarUrl = profile.getAvatarUrl();
+        if(profile.getCoverUrl() != null) this.coverUrl = profile.getCoverUrl();
     }
 
     public String getNickname() {

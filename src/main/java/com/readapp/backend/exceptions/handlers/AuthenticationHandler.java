@@ -1,5 +1,6 @@
 package com.readapp.backend.exceptions.handlers;
 
+import com.readapp.backend.exceptions.InconsistantParamsException;
 import com.readapp.backend.models.http.HttpStatus;
 import com.readapp.backend.models.http.Response;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -18,9 +19,17 @@ public class AuthenticationHandler {
         return Response.simple(HttpStatus.SIGNATURE_NOT_MATCH, null);
     }
 
+    @ExceptionHandler(InconsistantParamsException.class)
+    @ResponseBody
+    public Response inconsist(InconsistantParamsException e) {
+        e.printStackTrace();
+        return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public Response unknownExceptionHandler(Exception e) {
+        e.printStackTrace();
         return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
     }
 

@@ -28,7 +28,7 @@ public class SMSUtils {
         request.setSysAction("SendSms");
         request.putQueryParameter("RegionId", "cn-hangzhou");
         request.putQueryParameter("PhoneNumbers", form.getMobile());
-        request.putQueryParameter("SignName", AliyunConfig.SIGN_NAME);
+        request.putQueryParameter("SignName", "已读App");
         request.putQueryParameter("TemplateCode", AliyunConfig.VERIFICATION_SMS_TEMPLATE);
         request.putQueryParameter("TemplateParam", "{\"code\":" + "\"" + form.getCode() + "\"" +
                 "}");
