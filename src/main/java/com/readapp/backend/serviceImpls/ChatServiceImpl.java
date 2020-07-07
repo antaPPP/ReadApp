@@ -51,12 +51,22 @@ public class ChatServiceImpl implements ChatService {
          */
 
         Long chatId = form.getToChat();
-        Chat chat = chatDao.findById(chatId).get();
+
+        List<User> members = chatDao.findMembersId(chatId);
+
+        if (!members.contains(new User().setId(form.getFromUser()))
+                || !members.contains(new User().setId(form.getToUser()))) {
+            System.out.println("Invalid target");
+            return;
+        }
+
+        members = null;
+
 
         Message message = new Message();
         message.setContent(form.getContent());
         message.setType(form.getType());
-        message.setChat(chat);
+        message.setChat(new Chat().setId(chatId));
         message.setToUser(new User().setId(form.getToUser()));
         message.setFromUser(new User().setId(form.getFromUser()));
 

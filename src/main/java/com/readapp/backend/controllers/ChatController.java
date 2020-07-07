@@ -49,6 +49,8 @@ public class ChatController {
     public Response sendMessage(@RequestBody MessageForm form,
                                 @RequestHeader("Authorization") String Authorization){
         try {
+            Long from = Long.parseLong(JWTUtil.getUserId(Authorization));
+            form.setFromUser(from);
             chatService.sendMessage(form);
         } catch (Exception e) {
             e.printStackTrace();

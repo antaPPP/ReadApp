@@ -79,6 +79,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthForm loginByPassword(String countryCode, String mobile, String password) {
         User user = userDao.findByMobile(countryCode, mobile);
+        System.out.println("Login attempt: " + mobile);
         if (user == null || !user.getPassword().equals(password)) {
             throw new InvalidSecretException();
         }

@@ -46,6 +46,12 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
     private List<Article> articles;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
+    private List<Comment> comments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
+    private List<Reply> replies;
+
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "members")
     private List<Chat> chats;
 
@@ -97,6 +103,24 @@ public class User implements Serializable {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public User setComments(List<Comment> comments) {
+        this.comments = comments;
+        return this;
+    }
+
+    public List<Reply> getReplies() {
+        return replies;
+    }
+
+    public User setReplies(List<Reply> replies) {
+        this.replies = replies;
+        return this;
     }
 
     public int getLikeCount() {

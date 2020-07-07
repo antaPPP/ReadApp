@@ -1,7 +1,5 @@
 package com.readapp.backend.models;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "articles")
@@ -39,10 +38,17 @@ public class Article implements Serializable {
 
     @Column(name = "comment_count")
     private Integer commentCount;
+
     @Column(name = "like_count")
     private Integer likeCount;
+
     @Column(name = "rate_score")
     private Double rateScore;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
+    private List<Like> likes;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
+    private List<Comment> comments;
 
     private boolean isRated;
 
@@ -50,6 +56,24 @@ public class Article implements Serializable {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public Article setLikes(List<Like> likes) {
+        this.likes = likes;
+        return this;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public Article setComments(List<Comment> comments) {
+        this.comments = comments;
+        return this;
+    }
 
     public Long getId() {
         return id;
