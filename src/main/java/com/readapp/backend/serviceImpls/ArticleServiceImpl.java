@@ -2,8 +2,10 @@ package com.readapp.backend.serviceImpls;
 
 import com.readapp.backend.dto.ArticleResponse;
 import com.readapp.backend.dto.CommentResponse;
+import com.readapp.backend.dto.ReplyResponse;
 import com.readapp.backend.models.http.ArticleForm;
 import com.readapp.backend.models.http.CommentForm;
+import com.readapp.backend.models.http.ReplyForm;
 import com.readapp.backend.services.ArticleService;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +61,21 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<CommentResponse> getArticleComments(Long articleId, int page, int capacity) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void addReply(ReplyForm form) throws Exception {
+
+    }
+
+    @Override
+    public void deleteReply(Long rid) throws Exception {
+
+    }
+
+    @Override
+    public List<ReplyResponse> getCommentReplies(Long commentId, int page, int capacity) throws Exception {
         return null;
     }
 }
