@@ -21,10 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BackendApplicationTests {
@@ -139,6 +136,13 @@ class BackendApplicationTests {
     void testFindChatMembers() throws Exception {
         List<User> members = chatDao.findMembersId(1L);
         System.out.println(members.size());
+    }
+
+    @Test
+    void testRandLong() {
+        for (int i = 0; i < 30; i++) {
+            System.out.println(RNG.nextLong(new Random(), 30L));
+        }
     }
 
 }

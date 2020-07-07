@@ -18,7 +18,7 @@ public interface ArticleService {
     void addReply(ReplyForm form) throws Exception;
     void deleteReply(Long rid) throws Exception;
     ArticleResponse addArticle(ArticleForm form) throws Exception;
-    ArticleResponse editArticle(Long uid, ArticleForm form) throws Exception;
+    ArticleResponse editArticle(Long uid, Long articleId, ArticleForm form) throws Exception;
     ArticleResponse getArticle(Long id) throws Exception;
     List<ArticleResponse> getLikedArticles(Long uid, int page, int capacity) throws Exception;
     List<ArticleResponse> getArticles(Long uid, int page, int capacity) throws Exception;

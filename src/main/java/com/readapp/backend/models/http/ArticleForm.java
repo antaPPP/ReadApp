@@ -3,12 +3,32 @@ package com.readapp.backend.models.http;
 
 public class ArticleForm {
     private Long fromUser;
+    private String coverUrl;
     private String title;
     private String author;
     private String content;
+    private String excerpt;
 
     public ArticleForm(){
 
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public ArticleForm setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+        return this;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public ArticleForm setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+        return this;
     }
 
     public Long getFromUser() {

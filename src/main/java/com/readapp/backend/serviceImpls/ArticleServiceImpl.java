@@ -1,26 +1,76 @@
 package com.readapp.backend.serviceImpls;
 
+import com.readapp.backend.dao.*;
 import com.readapp.backend.dto.ArticleResponse;
 import com.readapp.backend.dto.CommentResponse;
 import com.readapp.backend.dto.ReplyResponse;
+import com.readapp.backend.models.*;
 import com.readapp.backend.models.http.ArticleForm;
 import com.readapp.backend.models.http.CommentForm;
 import com.readapp.backend.models.http.ReplyForm;
 import com.readapp.backend.services.ArticleService;
+import com.readapp.backend.utils.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service("articleService")
 public class ArticleServiceImpl implements ArticleService {
 
+    @Autowired
+    ArticleDao articleDao;
+
+    @Autowired
+    UserDao userDao;
+
+    @Autowired
+    CommentDao commentDao;
+
+    @Autowired
+    ReplyDao replyDao;
+
+    @Autowired
+    LikeDao likeDao;
+
     @Override
     public void addLike(Long uid, Long articleId) throws Exception {
+
+        Like like = likeDao.findByUserAndArticle(new User().setId(uid), new Article().setId(articleId));
+        Article article = articleDao.getOne(articleId);
+
+        if (like == null && article != null) {
+
+            article.setLikeCount(article.getLikeCount() + 1);
+
+            article = articleDao.save(article);
+
+            like = new Like();
+            like.setFromUser(new User().setId(uid));
+            like.setToArticle(article);
+
+            likeDao.save(like);
+        }
 
     }
 
     @Override
     public void deleteLike(Long uid, Long articleId) throws Exception {
+
+        Like like = likeDao.findByUserAndArticle(new User().setId(uid), new Article().setId(articleId));
+
+        Article article = articleDao.getOne(articleId);
+
+        if (like != null && article != null) {
+            article.setLikeCount(article.getLikeCount() - 1);
+            articleDao.save(article);
+            likeDao.delete(like);
+        }
 
     }
 
@@ -36,17 +86,50 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleResponse addArticle(ArticleForm form) throws Exception {
-        return null;
+        Long uid = form.getFromUser();
+        User user = userDao.getOne(uid);
+
+        if (user == null) throw new NoSuchElementException();
+
+        Article article = new Article();
+        article.setAuthor(form.getAuthor());
+        article.setContent(form.getContent());
+        article.setTitle(form.getTitle());
+        article.setCoverUrl(form.getCoverUrl());
+        article.setCommentCount(0);
+        article.setLikeCount(0);
+        article.setRateScore(0.);
+        article.setExcerpt(form.getExcerpt());
+        article.setFromUser(user);
+
+        article = articleDao.save(article);
+
+        return new ArticleResponse(article);
     }
 
     @Override
-    public ArticleResponse editArticle(Long uid, ArticleForm form) throws Exception {
-        return null;
+    public ArticleResponse editArticle(Long uid, Long articleId, ArticleForm form) throws Exception {
+
+        Article article = articleDao.getOne(articleId);
+
+        if (article == null || !article.getFromUser().getId().equals(uid)) throw new NoSuchElementException();
+
+        article.setAuthor(StringUtils.isNotBlank(form.getAuthor()) ? form.getAuthor() : article.getAuthor());
+        article.setContent(StringUtils.isNotBlank(form.getContent()) ? form.getContent() : article.getContent());
+        article.setCoverUrl(StringUtils.isNotBlank(form.getCoverUrl()) ? form.getCoverUrl() : article.getCoverUrl());
+        article.setExcerpt(StringUtils.isNotBlank(form.getExcerpt()) ? form.getExcerpt() : article.getExcerpt());
+        article.setTitle(StringUtils.isNotBlank(form.getTitle()) ? form.getExcerpt() : article.getTitle());
+
+        article = articleDao.save(article);
+
+        return new ArticleResponse(article);
     }
 
     @Override
     public ArticleResponse getArticle(Long id) throws Exception {
-        return null;
+        Article article = articleDao.getOne(id);
+        if (article == null) throw new NoSuchElementException();
+        return new ArticleResponse(article);
     }
 
     @Override
@@ -56,12 +139,43 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleResponse> getArticles(Long uid, int page, int capacity) throws Exception {
-        return null;
+
+        Pageable pageable = PageRequest.of(
+                page,
+                capacity
+        );
+
+        Page<Article> articles = articleDao.findByUser(new User().setId(uid), pageable);
+        List<ArticleResponse> responses = new ArrayList<>();
+
+        if (articles != null) {
+            for (Article article : articles.toList()) {
+                responses.add(new ArticleResponse(article));
+            }
+            return responses;
+        }
+
+        return responses;
     }
 
     @Override
     public List<CommentResponse> getArticleComments(Long articleId, int page, int capacity) throws Exception {
-        return null;
+        Pageable pageable = PageRequest.of(
+                page,
+                capacity
+        );
+
+        Page<Comment> comments = commentDao.findByArticle(new Article().setId(articleId), pageable);
+        List<CommentResponse> responses = new ArrayList<>();
+
+        if (comments != null) {
+            for (Comment comment : comments.toList()) {
+                responses.add(new CommentResponse(comment));
+            }
+            return responses;
+        }
+
+        return responses;
     }
 
     @Override
@@ -76,6 +190,21 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ReplyResponse> getCommentReplies(Long commentId, int page, int capacity) throws Exception {
-        return null;
+        Pageable pageable = PageRequest.of(
+                page,
+                capacity
+        );
+
+        Page<Reply> replies = replyDao.findByComment(new Comment().setId(commentId), pageable);
+        List<ReplyResponse> responses = new ArrayList<>();
+
+        if (replies != null) {
+            for (Reply reply : replies.toList()) {
+                responses.add(new ReplyResponse(reply));
+            }
+            return responses;
+        }
+
+        return responses;
     }
 }
