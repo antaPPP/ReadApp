@@ -1,7 +1,10 @@
 package com.readapp.backend;
 
 import com.readapp.backend.dao.ChatDao;
+import com.readapp.backend.dao.CommentDao;
 import com.readapp.backend.dao.MessageDao;
+import com.readapp.backend.dao.UserDao;
+import com.readapp.backend.models.Article;
 import com.readapp.backend.models.Chat;
 import com.readapp.backend.models.Message;
 import com.readapp.backend.models.User;
@@ -18,6 +21,7 @@ import com.readapp.backend.utils.SMSUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
@@ -40,6 +44,10 @@ class BackendApplicationTests {
     MessageDao messageDao;
     @Autowired
     FileService fileService;
+    @Autowired
+    CommentDao commentDao;
+    @Autowired
+    UserDao userDao;
 
     @Test
     void contextLoads() {
@@ -143,6 +151,11 @@ class BackendApplicationTests {
         for (int i = 0; i < 30; i++) {
             System.out.println(RNG.nextLong(new Random(), 30L));
         }
+    }
+
+    @Test
+    void testSearch() {
+        System.out.println(userDao.searchByKeyword("dy", PageRequest.of(0, 10)).toList().size());
     }
 
 }

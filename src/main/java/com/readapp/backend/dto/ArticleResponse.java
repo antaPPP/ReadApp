@@ -12,6 +12,7 @@ public class ArticleResponse {
     private String type;
     private String content;
     private Integer likeCount;
+    private Boolean liked = false;
     private Integer commentCount;
     private Double rateScore;
     private Timestamp createdAt;
@@ -20,7 +21,40 @@ public class ArticleResponse {
     public ArticleResponse(){}
 
     public ArticleResponse(Article article) {
+        id = String.valueOf(article.getId());
+        fromUser = new UserResponse(article.getFromUser());
+        author = article.getAuthor();
+        title = article.getTitle();
+        content = article.getContent();
+        likeCount = article.getLikeCount();
+        commentCount = article.getCommentCount();
+        rateScore = article.getRateScore();
+        createdAt = article.getCreatedAt();
+        updatedAt = article.getUpdatedAt();
+    }
 
+    public ArticleResponse setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
+        return this;
+    }
+
+    public Boolean getLiked() {
+        return liked;
+    }
+
+    public ArticleResponse setLiked(Boolean liked) {
+        this.liked = liked;
+        return this;
+    }
+
+    public ArticleResponse setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+        return this;
+    }
+
+    public ArticleResponse setRateScore(Double rateScore) {
+        this.rateScore = rateScore;
+        return this;
     }
 
     public String getType() {

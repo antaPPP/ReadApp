@@ -24,6 +24,9 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Article toArticle;
 
+    @Column(name = "content", nullable = false)
+    private String content;
+
     @OneToMany(mappedBy = "toComment", cascade = CascadeType.ALL)
     private List<Reply> replies;
 
@@ -40,6 +43,15 @@ public class Comment {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public String getContent() {
+        return content;
+    }
+
+    public Comment setContent(String content) {
+        this.content = content;
+        return this;
+    }
 
     public List<Like> getLikes() {
         return likes;

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.readapp.backend.dao.ProfileDao;
 import com.readapp.backend.dao.TagDao;
 import com.readapp.backend.dao.UserDao;
-import com.readapp.backend.dto.ProfileResponse;
 import com.readapp.backend.dto.UserResponse;
 import com.readapp.backend.models.Profile;
 import com.readapp.backend.models.Tag;
@@ -72,10 +71,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponse> searchByKeyword(String keyword, int page, int size) throws Exception {
         Pageable pageable = PageRequest.of(page - 1,size);
-        Page<Profile> profiles = profileDao.searchByKeyword(keyword, pageable);
+        Page<User> users = userDao.searchByKeyword(keyword, pageable);
         List<UserResponse> responses = new ArrayList<>();
-        for (Profile p : profiles.toList()) {
-            responses.add(new UserResponse().setId(p.getUser().getId()).setProfile(new ProfileResponse(p)));
+        for (User user : users.toList()) {
+            responses.add(new UserResponse(user));
         }
         System.out.println(JSONObject.toJSON(responses));
         return responses;

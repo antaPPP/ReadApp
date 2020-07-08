@@ -1,6 +1,7 @@
 package com.readapp.backend.controllers;
 
 import com.readapp.backend.models.http.ArticleForm;
+import com.readapp.backend.models.http.CommentForm;
 import com.readapp.backend.models.http.HttpStatus;
 import com.readapp.backend.models.http.Response;
 import com.readapp.backend.modules.annotations.AutoRefreshToken;
@@ -26,8 +27,7 @@ public class ArticleController {
                                   @RequestBody ArticleForm form){
         try {
             Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
-            if (!uid.equals(form.getFromUser())) throw new Exception();
-            return Response.success(articleService.addArticle(form));
+            return Response.success(articleService.addArticle(form.setFromUser(uid)));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
@@ -35,14 +35,78 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/article", method = RequestMethod.GET)
-    public Response getArticle(@RequestParam("id") Long id) {
+    public Response getArticle(
+           @RequestParam(value = "userId", required = false) Long uid,
+            @RequestParam("id") Long id) {
         try {
+            if (uid != null) {
+                return Response.success(articleService.getArticle(id).setLiked(articleService.checkLiked(uid, id)));
+            }
             return Response.success(articleService.getArticle(id));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
     }
+
+    @RequestMapping(value = "/article/like", method = RequestMethod.POST)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response addArticleLike(@RequestHeader("Authorization") String Authorization,
+                                   @RequestParam("toArticle") Long articleId) {
+        Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+        try {
+            articleService.addLike(uid, articleId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+        return Response.success(null);
+    }
+
+    @RequestMapping(value = "/article/like", method = RequestMethod.DELETE)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response deleteArticleLike(@RequestHeader("Authorization") String Authorization,
+                                   @RequestParam("toArticle") Long articleId) {
+        Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+        try {
+            articleService.deleteLike(uid, articleId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+        return Response.success(null);
+    }
+
+    @RequestMapping(value = "/article/comment", method = RequestMethod.POST)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response addArticleComment(@RequestHeader("Authorization") String Authorization,
+                                      @RequestBody CommentForm form) {
+        try {
+            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+            form.setFromUser(uid);
+            articleService.addComment(form);
+            return Response.success(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
+
+    @RequestMapping(value = "/article/comments", method = RequestMethod.GET)
+    public Response getArticleComments(@RequestParam("id") Long id,
+                                       @RequestParam("page") int page,
+                                       @RequestParam("capacity") int capacity) {
+        try {
+            return Response.success(articleService.getArticleComments(id, page, capacity));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
+
 
 
 }

@@ -24,4 +24,6 @@ public interface ArticleService {
     List<ArticleResponse> getArticles(Long uid, int page, int capacity) throws Exception;
     List<CommentResponse> getArticleComments(Long articleId, int page, int capacity) throws Exception;
     List<ReplyResponse> getCommentReplies(Long commentId, int page, int capacity) throws Exception;
+
+    boolean checkLiked(Long uid, Long articleId);
 }

@@ -77,11 +77,24 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void addComment(CommentForm form) throws Exception {
 
+        if (!articleDao.existsById(form.getToArticle())) return;
+
+        Comment comment = new Comment();
+        comment.setFromUser(new User().setId(form.getFromUser()));
+        comment.setContent(form.getContent());
+        comment.setLikeCount(0);
+        comment.setReplyCount(0);
+        comment.setToArticle(new Article().setId(form.getToArticle()));
+
+        commentDao.save(comment);
+
     }
 
     @Override
     public void deleteComment(Long cid) throws Exception {
-
+        Comment comment = commentDao.getOne(cid);
+        if (comment == null) return;
+        commentDao.delete(comment);
     }
 
     @Override
@@ -128,6 +141,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResponse getArticle(Long id) throws Exception {
         Article article = articleDao.getOne(id);
+
         if (article == null) throw new NoSuchElementException();
         return new ArticleResponse(article);
     }
@@ -141,7 +155,7 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleResponse> getArticles(Long uid, int page, int capacity) throws Exception {
 
         Pageable pageable = PageRequest.of(
-                page,
+                page - 1,
                 capacity
         );
 
@@ -161,18 +175,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<CommentResponse> getArticleComments(Long articleId, int page, int capacity) throws Exception {
         Pageable pageable = PageRequest.of(
-                page,
+                page - 1,
                 capacity
         );
-
+        System.out.println(articleId);
         Page<Comment> comments = commentDao.findByArticle(new Article().setId(articleId), pageable);
+        System.out.println("Count: " + comments.toList().size());
         List<CommentResponse> responses = new ArrayList<>();
 
-        if (comments != null) {
-            for (Comment comment : comments.toList()) {
-                responses.add(new CommentResponse(comment));
-            }
-            return responses;
+        for (Comment comment : comments.toList()) {
+            responses.add(new CommentResponse(comment));
         }
 
         return responses;
@@ -206,5 +218,11 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return responses;
+    }
+
+    @Override
+    public boolean checkLiked(Long uid, Long articleId) {
+        Like like = likeDao.findByUserAndArticle(new User().setId(uid), new Article().setId(articleId));
+        return like != null;
     }
 }
