@@ -2,6 +2,7 @@ package com.readapp.backend.controllers;
 
 import com.readapp.backend.dto.ChatResponse;
 import com.readapp.backend.models.Chat;
+import com.readapp.backend.models.User;
 import com.readapp.backend.models.http.ChatForm;
 import com.readapp.backend.models.http.HttpStatus;
 import com.readapp.backend.models.http.MessageForm;
@@ -15,6 +16,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 @RestController
@@ -64,10 +66,27 @@ public class ChatController {
     @AutoRefreshToken
     public Response getChat(@RequestParam("chatId") Long chatId,
                             @RequestHeader("Authorization") String Authorization){
-        return Response.success(null);
+        Chat chat = chatService.getChat(chatId);
+        if (!chat.getMembers().contains(new User().setId(Long.parseLong(JWTUtil.getUserId(Authorization))))) {
+            return Response.simple(HttpStatus.SIGNATURE_NOT_MATCH, null);
+        }
+        return Response.success(new ChatResponse(chat));
     }
 
+
     @RequestMapping(value = "/chats", method = RequestMethod.GET)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response getChats(
+            @RequestHeader("Authorization") String Authorization){
+        try {
+            return Response.success(chatService.getChats(Long.parseLong(JWTUtil.getUserId(Authorization))));
+        } catch (Exception e) {
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
+
+    @RequestMapping(value = "/chat_map", method = RequestMethod.GET)
     @RequiresAuthentication
     @AutoRefreshToken
     public Response loadMessageEvents(@RequestHeader("Authorization") String Authorization) {
@@ -86,12 +105,13 @@ public class ChatController {
     @RequiresAuthentication
     @AutoRefreshToken
     public Response findMessagesByChat(@RequestParam("id") Long id,
+                                       @RequestParam(value = "cursor", required = false) Timestamp cursor,
                                        @RequestParam("page") int page,
                                        @RequestParam("size") int size,
                                        @RequestHeader("Authorization") String Authorization) {
         try {
             Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
-            return Response.success(chatService.findMessagesByChat(id, uid, page, size));
+            return Response.success(chatService.findMessagesByChat(id, uid, page, size, cursor));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());

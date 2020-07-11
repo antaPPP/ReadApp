@@ -1,9 +1,10 @@
 package com.readapp.backend.controllers;
 
-import com.readapp.backend.models.http.ArticleForm;
-import com.readapp.backend.models.http.CommentForm;
-import com.readapp.backend.models.http.HttpStatus;
-import com.readapp.backend.models.http.Response;
+import com.readapp.backend.dto.CommentResponse;
+import com.readapp.backend.dto.ReplyResponse;
+import com.readapp.backend.models.Comment;
+import com.readapp.backend.models.Reply;
+import com.readapp.backend.models.http.*;
 import com.readapp.backend.modules.annotations.AutoRefreshToken;
 import com.readapp.backend.services.ArticleService;
 import com.readapp.backend.services.UserService;
@@ -87,8 +88,8 @@ public class ArticleController {
         try {
             Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
             form.setFromUser(uid);
-            articleService.addComment(form);
-            return Response.success(null);
+            Comment comment = articleService.addComment(form);
+            return Response.success(new CommentResponse(comment));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
@@ -106,7 +107,5 @@ public class ArticleController {
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
     }
-
-
 
 }

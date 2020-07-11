@@ -6,7 +6,9 @@ public class ReplyForm {
     private Long toReply;
     private Long toComment;
 
-    public ReplyForm(){}
+    public ReplyForm(){
+
+    }
 
     public Long getFromUser() {
         return fromUser;

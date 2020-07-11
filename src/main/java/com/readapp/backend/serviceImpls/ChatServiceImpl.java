@@ -5,7 +5,9 @@ import com.readapp.backend.controllers.SocketSession;
 import com.readapp.backend.dao.ChatDao;
 import com.readapp.backend.dao.MessageDao;
 import com.readapp.backend.dao.UserDao;
+import com.readapp.backend.dto.ChatResponse;
 import com.readapp.backend.dto.MessageResponse;
+import com.readapp.backend.dto.UserResponse;
 import com.readapp.backend.models.Chat;
 import com.readapp.backend.models.Message;
 import com.readapp.backend.models.User;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service("chatService")
@@ -102,9 +105,18 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<MessageResponse> findMessagesByChat(Long id, Long uid, int page, int size) throws Exception {
+    public List<MessageResponse> findMessagesByChat(Long id, Long uid, int page, int size, Timestamp cursor) throws Exception {
 
         if (this.checkMembers(id, uid)) throw new NoSuchElementException();
+
+        if (cursor != null) {
+            List<Message> messages = messageDao.findByCreatedAtAfterAndChat(new Chat().setId(id), cursor);
+            List<MessageResponse> responses = new ArrayList<>();
+            for (Message message : messages) {
+                responses.add(new MessageResponse(message));
+            }
+            return responses;
+        }
 
         Pageable pageable = PageRequest.of(page - 1,size);
 
@@ -150,6 +162,24 @@ public class ChatServiceImpl implements ChatService {
         chat = chatDao.save(chat);
 
         return chat;
+    }
+
+    @Override
+    public Chat getChat(Long id) {
+        return chatDao.getOne(id);
+    }
+
+    @Override
+    public List<ChatResponse> getChats(Long id) throws Exception {
+        List<Chat> chats = chatDao.findByMembers_Id(id);
+        List<ChatResponse> responses = new ArrayList<>();
+        int index ;
+        for (Chat chat : chats) {
+            index = 0;
+            if (chat.getMembers().get(0).getId().equals(id)) index = 1;
+            responses.add(new ChatResponse(chat).setToUser(new UserResponse(chat.getMembers().get(index))));
+        }
+        return responses;
     }
 
     @Override

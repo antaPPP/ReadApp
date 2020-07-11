@@ -15,7 +15,12 @@ public class ReplyResponse {
     public ReplyResponse(){}
 
     public ReplyResponse(Reply reply) {
-
+        id =  String.valueOf(reply.getId());
+        fromUser = new UserResponse(reply.getFromUser());
+        if (reply.getToReply() != null) toReply = new ReplyResponse(reply.getToReply().setToReply(null));
+        content = reply.getContent();
+        createdAt = reply.getCreatedAt();
+        updatedAt = reply.getUpdatedAt();
     }
 
     public String getId() {

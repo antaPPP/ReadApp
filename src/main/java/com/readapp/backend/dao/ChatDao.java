@@ -13,4 +13,6 @@ public interface ChatDao extends JpaRepository<Chat, Long> {
 
     @Query(value = "select c.members from Chat c where c.id = ?1")
     List<User> findMembersId(Long cid);
+
+    List<Chat> findByMembers_Id(Long id);
 }

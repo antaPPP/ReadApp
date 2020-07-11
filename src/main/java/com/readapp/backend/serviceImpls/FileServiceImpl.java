@@ -14,4 +14,5 @@ public class FileServiceImpl implements FileService {
         String upToken = auth.uploadToken(QiniuConfig.BUCKET);
         return upToken;
     }
+
 }

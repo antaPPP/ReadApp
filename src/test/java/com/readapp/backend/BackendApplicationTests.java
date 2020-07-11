@@ -154,6 +154,12 @@ class BackendApplicationTests {
     }
 
     @Test
+    void testFindChats() throws Exception {
+        List<Chat> chats = chatDao.findByMembers_Id(1L);
+        System.out.println(chats.get(0).getId());
+    }
+
+    @Test
     void testSearch() {
         System.out.println(userDao.searchByKeyword("dy", PageRequest.of(0, 10)).toList().size());
     }

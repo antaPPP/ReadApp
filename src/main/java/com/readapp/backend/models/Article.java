@@ -33,7 +33,8 @@ public class Article implements Serializable {
     @Column(name = "coverUrl")
     private String coverUrl;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "text")
+    @Lob
     private String content;
 
     @Column(name = "comment_count")

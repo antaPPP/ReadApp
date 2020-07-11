@@ -1,5 +1,6 @@
 package com.readapp.backend.controllers;
 
+import com.readapp.backend.dto.ReplyResponse;
 import com.readapp.backend.models.Reply;
 import com.readapp.backend.models.http.HttpStatus;
 import com.readapp.backend.models.http.ReplyForm;
@@ -31,12 +32,12 @@ public class ReplyController {
        try {
            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
            form.setFromUser(uid);
-           articleService.addReply(form);
+           Reply reply = articleService.addReply(form);
+           return Response.success(new ReplyResponse(reply));
        } catch (Exception e) {
            e.printStackTrace();
            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
        }
-       return Response.success(null);
     }
 
 

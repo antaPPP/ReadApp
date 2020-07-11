@@ -30,6 +30,9 @@ public class ArticleServiceImpl implements ArticleService {
     UserDao userDao;
 
     @Autowired
+    ProfileDao profileDao;
+
+    @Autowired
     CommentDao commentDao;
 
     @Autowired
@@ -75,9 +78,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void addComment(CommentForm form) throws Exception {
+    public Comment addComment(CommentForm form) throws Exception {
 
-        if (!articleDao.existsById(form.getToArticle())) return;
+        if (!articleDao.existsById(form.getToArticle())) return null;
 
         Comment comment = new Comment();
         comment.setFromUser(new User().setId(form.getFromUser()));
@@ -86,7 +89,10 @@ public class ArticleServiceImpl implements ArticleService {
         comment.setReplyCount(0);
         comment.setToArticle(new Article().setId(form.getToArticle()));
 
-        commentDao.save(comment);
+        comment = commentDao.save(comment);
+        comment.getFromUser().setProfile(profileDao.findByUserId(new User().setId(form.getFromUser())));
+
+        return comment;
 
     }
 
@@ -191,7 +197,18 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void addReply(ReplyForm form) throws Exception {
+    public Reply addReply(ReplyForm form) throws Exception {
+        if (!commentDao.existsById(form.getToComment())) return null;
+//        if (StringUtils.isNotBlank(String.valueOf(form.getToReply())) && !replyDao.existsById(form.getToReply())) return null;
+        Reply reply = new Reply();
+        reply.setFromUser(new User().setId(form.getFromUser()));
+        reply.setContent(form.getContent());
+        reply.setToComment(commentDao.getOne(form.getToComment()));
+        if (form.getToReply() != null) reply.setToReply(replyDao.getOne(form.getToReply()));
+        reply = replyDao.save(reply);
+        reply.getFromUser().setProfile(profileDao.findByUserId(new User().setId(form.getFromUser())));
+
+        return reply;
 
     }
 
