@@ -32,6 +32,8 @@ public class ChatResponse {
         this.members = new ArrayList<>();
         this.type = chat.getType();
         this.allMembers = new ArrayList<>();
+        this.createdAt = chat.getCreatedAt();
+        this.updatedAt = chat.getUpdatedAt();
         if (chat.getMembers() != null) {
             for (User user : chat.getMembers()) {
                 members.add(new UserResponse(
