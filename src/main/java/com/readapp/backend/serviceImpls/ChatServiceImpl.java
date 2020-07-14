@@ -18,6 +18,7 @@ import com.readapp.backend.services.ChatService;
 import com.readapp.backend.utils.ChatUtils;
 import com.readapp.backend.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public void sendMessage(MessageForm form) throws Exception {
+    public Message sendMessage(MessageForm form) throws Exception {
 
         /*
          * Save message first before emit the event
@@ -60,7 +61,7 @@ public class ChatServiceImpl implements ChatService {
         if (!members.contains(new User().setId(form.getFromUser()))
                 || !members.contains(new User().setId(form.getToUser()))) {
             System.out.println("Invalid target");
-            return;
+            return null;
         }
 
         members = null;
@@ -88,6 +89,8 @@ public class ChatServiceImpl implements ChatService {
             System.out.println("push to chat map");
             chatUtils.push(message);
         }
+
+        return message;
     }
 
 
@@ -110,7 +113,8 @@ public class ChatServiceImpl implements ChatService {
         if (this.checkMembers(id, uid)) throw new NoSuchElementException();
 
         if (cursor != null) {
-            List<Message> messages = messageDao.findByCreatedAtAfterAndChat(new Chat().setId(id), cursor);
+            Pageable pageable = PageRequest.of(page,size);
+            Page<Message> messages = messageDao.findByCreatedAtAfterAndChat(new Chat().setId(id), cursor, pageable);
             List<MessageResponse> responses = new ArrayList<>();
             for (Message message : messages) {
                 responses.add(new MessageResponse(message));

@@ -17,6 +17,6 @@ public interface MessageDao extends JpaRepository<Message, Long> {
     @Query(value = "SELECT m FROM Message m WHERE m.chat = ?1")
     Page<Message> findMessagesByChat(Chat chat, Pageable pageable);
 
-    @Query(value = "SELECT m FROM Message m WHERE m.chat = ?1 AND m.createdAt > ?2")
-    List<Message> findByCreatedAtAfterAndChat(Chat chat, Timestamp cursor);
+    @Query(value = "SELECT m FROM Message m WHERE m.chat = ?1 AND m.createdAt < ?2 ")
+    Page<Message> findByCreatedAtAfterAndChat(Chat chat, Timestamp cursor, Pageable pageable);
 }

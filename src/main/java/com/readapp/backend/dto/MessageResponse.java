@@ -23,9 +23,9 @@ import java.sql.Timestamp;
  */
 public class MessageResponse implements Serializable {
     private Long id;
-    private Long fromChat;
+    private ChatResponse fromChat;
     private String type;
-    private Long fromUser;
+    private UserResponse fromUser;
     private String content;
     private ImageResponse image;
     private Timestamp createdAt;
@@ -36,24 +36,28 @@ public class MessageResponse implements Serializable {
     public MessageResponse(@NotNull Message message) {
         this.id = message.getId();
         this.type = message.getType();
-        this.fromUser = message.getFromUser().getId();
-        this.fromChat = message.getChat().getId();
+        this.fromUser = new UserResponse(message.getFromUser());
+        this.fromChat = new ChatResponse().setId(message.getChat().getId());
         this.content = message.getContent();
         if (message.getImage() != null) this.image = new ImageResponse(message.getImage());
         this.createdAt = message.getCreatedAt();
         this.updatedAt = message.getUpdatedAt();
     }
 
-    public Long getFromChat() {
+    public ChatResponse getFromChat() {
         return fromChat;
     }
 
-    public MessageResponse setFromChat(Long fromChat) {
+    public MessageResponse setFromChat(ChatResponse fromChat) {
         this.fromChat = fromChat;
         return this;
     }
 
-    public MessageResponse setFromUser(Long fromUser) {
+    public UserResponse getFromUser() {
+        return fromUser;
+    }
+
+    public MessageResponse setFromUser(UserResponse fromUser) {
         this.fromUser = fromUser;
         return this;
     }
@@ -74,10 +78,6 @@ public class MessageResponse implements Serializable {
     public MessageResponse setType(String type) {
         this.type = type;
         return this;
-    }
-
-    public Long getFromUser() {
-        return fromUser;
     }
 
     public String getContent() {

@@ -4,6 +4,7 @@ package com.readapp.backend.services;
 import com.readapp.backend.dto.ChatResponse;
 import com.readapp.backend.dto.MessageResponse;
 import com.readapp.backend.models.Chat;
+import com.readapp.backend.models.Message;
 import com.readapp.backend.models.http.MessageForm;
 import com.readapp.backend.models.utils.ChatPreviewInfo;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ChatService {
-    void sendMessage(MessageForm form) throws Exception;
+    Message sendMessage(MessageForm form) throws Exception;
 
     Chat getDirectChatByMembers(Long fromUser, Long toUser) throws Exception;
 

@@ -70,6 +70,9 @@ public class User implements Serializable {
     @ManyToMany
     private List<User> follows;
 
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
+    private List<Activity> activities;
+
     @Column(name = "likeCount")
     private int likeCount;
 
@@ -103,6 +106,15 @@ public class User implements Serializable {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public User setActivities(List<Activity> activities) {
+        this.activities = activities;
+        return this;
     }
 
     public List<Comment> getComments() {

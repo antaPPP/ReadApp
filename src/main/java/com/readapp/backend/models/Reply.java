@@ -28,10 +28,22 @@ public class Reply {
     @ManyToOne
     private Reply toReply;
 
+    @OneToOne(mappedBy = "fromReply")
+    private Activity activity;
+
     @UpdateTimestamp
     private Timestamp updatedAt;
     @CreationTimestamp
     private Timestamp createdAt;
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public Reply setActivity(Activity activity) {
+        this.activity = activity;
+        return this;
+    }
 
     public Long getId() {
         return id;

@@ -1,7 +1,9 @@
 package com.readapp.backend.controllers;
 
 import com.readapp.backend.dto.ChatResponse;
+import com.readapp.backend.dto.MessageResponse;
 import com.readapp.backend.models.Chat;
+import com.readapp.backend.models.Message;
 import com.readapp.backend.models.User;
 import com.readapp.backend.models.http.ChatForm;
 import com.readapp.backend.models.http.HttpStatus;
@@ -50,15 +52,16 @@ public class ChatController {
     @AutoRefreshToken
     public Response sendMessage(@RequestBody MessageForm form,
                                 @RequestHeader("Authorization") String Authorization){
+        Message message = null;
         try {
             Long from = Long.parseLong(JWTUtil.getUserId(Authorization));
             form.setFromUser(from);
-            chatService.sendMessage(form);
+            message = chatService.sendMessage(form);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
-        return Response.success(null);
+        return Response.success(new MessageResponse(message));
     }
 
     @RequestMapping(value = "/chat", method = RequestMethod.GET)

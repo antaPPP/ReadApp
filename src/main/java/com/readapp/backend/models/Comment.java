@@ -18,6 +18,9 @@ public class Comment {
     @Column(name = "id")
     private Long id;
 
+    @OneToOne(mappedBy = "fromComment")
+    private Activity activity;
+
     @ManyToOne
     private User fromUser;
 
@@ -43,6 +46,15 @@ public class Comment {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public Comment setActivity(Activity activity) {
+        this.activity = activity;
+        return this;
+    }
 
     public String getContent() {
         return content;

@@ -18,6 +18,9 @@ public class Like {
     @Column(name = "id")
     private Long id;
 
+    @OneToOne(mappedBy = "fromLike")
+    private Activity activity;
+
     @ManyToOne
     private User fromUser;
 
@@ -31,6 +34,15 @@ public class Like {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public Like setActivity(Activity activity) {
+        this.activity = activity;
+        return this;
+    }
 
     public Comment getToComment() {
         return toComment;
