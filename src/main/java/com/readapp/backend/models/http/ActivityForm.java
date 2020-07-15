@@ -1,23 +1,25 @@
 package com.readapp.backend.models.http;
 
-import com.readapp.backend.dto.CommentResponse;
-import com.readapp.backend.dto.LikeResponse;
-import com.readapp.backend.dto.ReplyResponse;
-import com.readapp.backend.dto.UserResponse;
-
-import java.sql.Timestamp;
+import com.readapp.backend.models.Comment;
+import com.readapp.backend.models.Like;
+import com.readapp.backend.models.Reply;
+import com.readapp.backend.models.User;
 
 public class ActivityForm {
     private String type;
-    private LikeResponse fromLike;
-    private CommentResponse fromComment;
-    private ReplyResponse fromReply;
-    private UserResponse fromFollower;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private Long toUser;
+    private Like like;
+    private Comment comment;
+    private Reply reply;
+    private User follower;
 
-    public ActivityForm() {
+    public Long getToUser() {
+        return toUser;
+    }
 
+    public ActivityForm setToUser(Long toUser) {
+        this.toUser = toUser;
+        return this;
     }
 
     public String getType() {
@@ -29,57 +31,39 @@ public class ActivityForm {
         return this;
     }
 
-    public LikeResponse getFromLike() {
-        return fromLike;
+    public Like getLike() {
+        return like;
     }
 
-    public ActivityForm setFromLike(LikeResponse fromLike) {
-        this.fromLike = fromLike;
+    public ActivityForm setLike(Like like) {
+        this.like = like;
         return this;
     }
 
-    public CommentResponse getFromComment() {
-        return fromComment;
+    public Comment getComment() {
+        return comment;
     }
 
-    public ActivityForm setFromComment(CommentResponse fromComment) {
-        this.fromComment = fromComment;
+    public ActivityForm setComment(Comment comment) {
+        this.comment = comment;
         return this;
     }
 
-    public ReplyResponse getFromReply() {
-        return fromReply;
+    public Reply getReply() {
+        return reply;
     }
 
-    public ActivityForm setFromReply(ReplyResponse fromReply) {
-        this.fromReply = fromReply;
+    public ActivityForm setReply(Reply reply) {
+        this.reply = reply;
         return this;
     }
 
-    public UserResponse getFromFollower() {
-        return fromFollower;
+    public User getFollower() {
+        return follower;
     }
 
-    public ActivityForm setFromFollower(UserResponse fromFollower) {
-        this.fromFollower = fromFollower;
-        return this;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public ActivityForm setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public ActivityForm setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
+    public ActivityForm setFollower(User follower) {
+        this.follower = follower;
         return this;
     }
 }

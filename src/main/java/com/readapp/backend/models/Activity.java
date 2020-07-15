@@ -17,7 +17,10 @@ public class Activity {
     private Long id;
 
     @Column(name = "type", nullable = false)
-    private String type;    // like, comment, reply, rate
+    private String type;    // like, comment, follower, rate
+
+    @ManyToOne
+    private User user;
 
     @ManyToOne
     private User fromUser;
@@ -35,6 +38,15 @@ public class Activity {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public User getUser() {
+        return user;
+    }
+
+    public Activity setUser(User user) {
+        this.user = user;
+        return this;
+    }
 
     public User getFromUser() {
         return fromUser;
