@@ -4,16 +4,12 @@ import com.readapp.backend.dao.ChatDao;
 import com.readapp.backend.dao.CommentDao;
 import com.readapp.backend.dao.MessageDao;
 import com.readapp.backend.dao.UserDao;
-import com.readapp.backend.models.Article;
-import com.readapp.backend.models.Chat;
-import com.readapp.backend.models.Message;
-import com.readapp.backend.models.User;
+import com.readapp.backend.dto.ActivityResponse;
+import com.readapp.backend.models.*;
 import com.readapp.backend.models.http.MessageForm;
 import com.readapp.backend.models.utils.ChatPreviewInfo;
 import com.readapp.backend.models.utils.SMSForm;
-import com.readapp.backend.services.ChatService;
-import com.readapp.backend.services.FileService;
-import com.readapp.backend.services.UserService;
+import com.readapp.backend.services.*;
 import com.readapp.backend.utils.ChatUtils;
 import com.readapp.backend.utils.RNG;
 import com.readapp.backend.utils.RedisUtil;
@@ -21,6 +17,7 @@ import com.readapp.backend.utils.SMSUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -48,6 +45,10 @@ class BackendApplicationTests {
     CommentDao commentDao;
     @Autowired
     UserDao userDao;
+    @Autowired
+    ArticleService articleService;
+    @Autowired
+    ActivityService activityService;
 
     @Test
     void contextLoads() {
@@ -164,4 +165,14 @@ class BackendApplicationTests {
         System.out.println(userDao.searchByKeyword("dy", PageRequest.of(0, 10)).toList().size());
     }
 
+    @Test
+    void testLikeArticle() throws Exception{
+        articleService.addLike(3L, 2L);
+    }
+
+    @Test
+    void testActivities() throws Exception {
+        List<ActivityResponse> responses = activityService.getLikeActivities(1L,  1, 10);
+        System.out.println(responses.size());
+    }
 }

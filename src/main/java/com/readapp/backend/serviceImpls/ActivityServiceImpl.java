@@ -1,6 +1,7 @@
 package com.readapp.backend.serviceImpls;
 
 import com.readapp.backend.dao.ActivityDao;
+import com.readapp.backend.dto.ActivityResponse;
 import com.readapp.backend.models.Activity;
 import com.readapp.backend.models.User;
 import com.readapp.backend.models.http.ActivityForm;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("activityService")
@@ -58,30 +60,47 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<Activity> getLikeActivities(Long uid, int page, int capacity) {
-        Pageable pageable = PageRequest.of(page, capacity);
+    public List<ActivityResponse> getLikeActivities(Long uid, int page, int capacity) {
+        Pageable pageable = PageRequest.of(page - 1, capacity);
         Page<Activity> activities = activityDao.findByType(new User().setId(uid), "like", pageable);
-        return activities.toList();
+        System.out.println(activities.toList().size());
+        List<ActivityResponse> responses = new ArrayList<>();
+        for (Activity activity : activities) {
+            responses.add(new ActivityResponse(activity));
+        }
+        return responses;
     }
 
     @Override
-    public List<Activity> getCommentActivities(Long uid, int page, int capacity) {
-        Pageable pageable = PageRequest.of(page, capacity);
+    public List<ActivityResponse> getCommentActivities(Long uid, int page, int capacity) {
+        Pageable pageable = PageRequest.of(page - 1, capacity);
         Page<Activity> activities = activityDao.findByType(new User().setId(uid), "comment", pageable);
-        return activities.toList();
+        List<ActivityResponse> responses = new ArrayList<>();
+        for (Activity activity : activities) {
+            responses.add(new ActivityResponse(activity));
+        }
+        return responses;
     }
 
     @Override
-    public List<Activity> getRateActivities(Long uid, int page, int capacity) {
-        Pageable pageable = PageRequest.of(page, capacity);
+    public List<ActivityResponse> getRateActivities(Long uid, int page, int capacity) {
+        Pageable pageable = PageRequest.of(page - 1, capacity);
         Page<Activity> activities = activityDao.findByType(new User().setId(uid), "rate", pageable);
-        return activities.toList();
+        List<ActivityResponse> responses = new ArrayList<>();
+        for (Activity activity : activities) {
+            responses.add(new ActivityResponse(activity));
+        }
+        return responses;
     }
 
     @Override
-    public List<Activity> getFollowerActivities(Long uid, int page, int capacity) {
-        Pageable pageable = PageRequest.of(page, capacity);
+    public List<ActivityResponse> getFollowerActivities(Long uid, int page, int capacity) {
+        Pageable pageable = PageRequest.of(page - 1, capacity);
         Page<Activity> activities = activityDao.findByType(new User().setId(uid), "follower", pageable);
-        return activities.toList();
+        List<ActivityResponse> responses = new ArrayList<>();
+        for (Activity activity : activities) {
+            responses.add(new ActivityResponse(activity));
+        }
+        return responses;
     }
 }

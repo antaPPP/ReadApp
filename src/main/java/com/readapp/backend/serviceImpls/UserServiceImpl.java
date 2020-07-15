@@ -8,7 +8,9 @@ import com.readapp.backend.dto.UserResponse;
 import com.readapp.backend.models.Profile;
 import com.readapp.backend.models.Tag;
 import com.readapp.backend.models.User;
+import com.readapp.backend.models.http.ActivityForm;
 import com.readapp.backend.models.utils.ProfileForm;
+import com.readapp.backend.services.ActivityService;
 import com.readapp.backend.services.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ public class UserServiceImpl implements UserService {
     UserDao userDao;
     @Autowired
     TagDao tagDao;
+    @Autowired
+    ActivityService activityService;
 
     @Override
     public ProfileForm getUserProfile(Long uid) {
@@ -112,6 +116,11 @@ public class UserServiceImpl implements UserService {
         to.setFollowerCount(to.getFollowerCount() + 1);
         userDao.save(to);
         userDao.save(from);
+        ActivityForm form = new ActivityForm();
+        form.setType("follower");
+        form.setFollower(from);
+        form.setToUser(toUser);
+        activityService.addActivity(form);
     }
 
     /**

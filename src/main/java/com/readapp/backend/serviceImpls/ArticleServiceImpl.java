@@ -5,9 +5,11 @@ import com.readapp.backend.dto.ArticleResponse;
 import com.readapp.backend.dto.CommentResponse;
 import com.readapp.backend.dto.ReplyResponse;
 import com.readapp.backend.models.*;
+import com.readapp.backend.models.http.ActivityForm;
 import com.readapp.backend.models.http.ArticleForm;
 import com.readapp.backend.models.http.CommentForm;
 import com.readapp.backend.models.http.ReplyForm;
+import com.readapp.backend.services.ActivityService;
 import com.readapp.backend.services.ArticleService;
 import com.readapp.backend.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +44,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     LikeDao likeDao;
 
+    @Autowired
+    ActivityService activityService;
+
     @Override
+    @Transactional
     public void addLike(Long uid, Long articleId) throws Exception {
 
         Like like = likeDao.findByUserAndArticle(new User().setId(uid), new Article().setId(articleId));
@@ -57,7 +64,13 @@ public class ArticleServiceImpl implements ArticleService {
             like.setFromUser(new User().setId(uid));
             like.setToArticle(article);
 
-            likeDao.save(like);
+            like = likeDao.save(like);
+
+            ActivityForm form = new ActivityForm();
+            form.setType("like");
+            form.setToUser(article.getFromUser().getId());
+            form.setLike(like);
+            activityService.addActivity(form);
         }
 
     }
@@ -154,6 +167,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleResponse> getLikedArticles(Long uid, int page, int capacity) throws Exception {
+        Pageable pageable = PageRequest.of(page, capacity);
+        Page<Like> likes = likeDao.findLikedArticlesByFromUser(new User().setId(uid), pageable);
+        if (likes != null) {
+            List<ArticleResponse> responses = new ArrayList<>();
+            for (Like like : likes) {
+                responses.add(new ArticleResponse(like.getToArticle()));
+            }
+            return responses;
+        }
         return null;
     }
 
