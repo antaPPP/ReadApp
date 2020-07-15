@@ -210,6 +210,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public List<ArticleResponse> getDetailedArticles(Long uid, int page, int capacity) throws Exception{
+        return this.getArticles(uid, page, capacity);
+    }
+
+    @Override
     public List<CommentResponse> getArticleComments(Long articleId, int page, int capacity) throws Exception {
         Pageable pageable = PageRequest.of(
                 page - 1,

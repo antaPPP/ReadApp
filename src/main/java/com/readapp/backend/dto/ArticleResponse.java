@@ -10,6 +10,7 @@ public class ArticleResponse {
     private String author;
     private String title;
     private String type;
+    private String coverUrl;
     private String excerpt;
     private String content;
     private Integer likeCount;
@@ -27,12 +28,22 @@ public class ArticleResponse {
         author = article.getAuthor();
         title = article.getTitle();
         excerpt = article.getExcerpt();
+        coverUrl = article.getCoverUrl();
         content = article.getContent();
         likeCount = article.getLikeCount();
         commentCount = article.getCommentCount();
         rateScore = article.getRateScore();
         createdAt = article.getCreatedAt();
         updatedAt = article.getUpdatedAt();
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public ArticleResponse setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+        return this;
     }
 
     public String getExcerpt() {

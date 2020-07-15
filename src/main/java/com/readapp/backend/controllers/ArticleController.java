@@ -108,4 +108,24 @@ public class ArticleController {
         }
     }
 
+    @RequestMapping(value = "/articles", method = RequestMethod.GET)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response getUserArticles(@RequestHeader("Authorization") String Authorization,
+                                    @RequestParam(value = "id", required = false) Long id,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("capacity") int capacity) {
+        try {
+            if (id == null) {
+                Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+                return Response.success(articleService.getDetailedArticles(uid, page, capacity));
+            } else {
+                return Response.success(articleService.getArticles(id, page, capacity));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
+
 }
