@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import java.util.Set;
+import java.util.HashSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,40 +25,40 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public Activity addActivity(ActivityForm form) {
+        Set activitySet = new HashSet();
+        Activity activity = new Activity();
+
         if (form.getType().equals("like")) {
-            Activity activity = new Activity();
             activity.setType("like");
             activity.setFromLike(form.getLike());
             activity.setUser(new User().setId(form.getToUser()));
             activity = activityDao.save(activity);
-            return activity;
         } else if (form.getType().equals("comment")) {
-            Activity activity = new Activity();
             activity.setType("comment");
             activity.setFromComment(form.getComment());
             activity.setUser(new User().setId(form.getToUser()));
             activity = activityDao.save(activity);
-            return activity;
         } else if (form.getType().equals("follower")) {
-            Activity activity = new Activity();
             activity.setType("follower");
             activity.setFromUser(form.getFollower());
             activity.setUser(new User().setId(form.getToUser()));
             activity = activityDao.save(activity);
-            return activity;
         } else if (form.getType().equals("reply")) {
-            Activity activity = new Activity();
             activity.setFromReply(form.getReply());
             activity.setType("comment");
             activity.setUser(new User().setId(form.getToUser()));
             activity = activityDao.save(activity);
-            return activity;
         } else if (form.getType().equals("rate")) {
             /**
              * TODO: rate
              */
         }
-        return null;
+        if (activitySet.contains(activity)) {
+            return null;
+        } else {
+            activitySet.add(activity);
+            return activity;
+        }
     }
 
     @Override
