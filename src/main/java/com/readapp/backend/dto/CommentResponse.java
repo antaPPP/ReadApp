@@ -10,6 +10,7 @@ import java.util.List;
 public class CommentResponse {
     private String id;
     private UserResponse fromUser;
+    private ArticleResponse toArticle;
     private List<ReplyResponse> replies;
     private Integer replyCount;
     private Integer likeCount;
@@ -28,11 +29,23 @@ public class CommentResponse {
         content = comment.getContent();
         createdAt = comment.getCreatedAt();
         updatedAt = comment.getUpdatedAt();
+        if (comment.getToArticle() != null) {
+            toArticle = new ArticleResponse(comment.getToArticle().setContent(null));
+        }
         if (comment.getReplies() != null) {
             for (Reply reply : comment.getReplies()) {
                 replies.add(new ReplyResponse(reply));
             }
         }
+    }
+
+    public ArticleResponse getToArticle() {
+        return toArticle;
+    }
+
+    public CommentResponse setToArticle(ArticleResponse toArticle) {
+        this.toArticle = toArticle;
+        return this;
     }
 
     public Integer getReplyCount() {
