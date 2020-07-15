@@ -1,9 +1,6 @@
 package com.readapp.backend;
 
-import com.readapp.backend.dao.ChatDao;
-import com.readapp.backend.dao.CommentDao;
-import com.readapp.backend.dao.MessageDao;
-import com.readapp.backend.dao.UserDao;
+import com.readapp.backend.dao.*;
 import com.readapp.backend.dto.ActivityResponse;
 import com.readapp.backend.models.*;
 import com.readapp.backend.models.http.MessageForm;
@@ -22,7 +19,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-import java.util.*;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BackendApplicationTests {
@@ -49,6 +51,8 @@ class BackendApplicationTests {
     ArticleService articleService;
     @Autowired
     ActivityService activityService;
+    @Autowired
+    ActivityDao activityDao;
 
     @Test
     void contextLoads() {
@@ -174,5 +178,10 @@ class BackendApplicationTests {
     void testActivities() throws Exception {
         List<ActivityResponse> responses = activityService.getLikeActivities(1L,  1, 10);
         System.out.println(responses.size());
+    }
+
+    @Test
+    void testActivityCursor() throws Exception {
+        System.out.println(activityDao.countByCreatedAt(new User().setId(1L), "comment", new Date(183938999999994L)));
     }
 }

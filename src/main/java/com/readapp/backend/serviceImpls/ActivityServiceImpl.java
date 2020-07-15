@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,11 @@ public class ActivityServiceImpl implements ActivityService {
              */
         }
         return null;
+    }
+
+    @Override
+    public Integer getActivitiesCount(Long uid, String type, Long cursorAt) {
+        return activityDao.countByCreatedAt(new User().setId(uid), type, new Date(cursorAt));
     }
 
     @Override

@@ -39,4 +39,21 @@ public class ActivityController {
         }
         return Response.success(null);
     }
+
+    @GetMapping(value = "/activities_count")
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response getActivitiesCount(
+            @RequestHeader("Authorization") String Authorization,
+            @RequestParam("type") String type,
+            @RequestParam("cursorAt") Long cursorAt
+    ) {
+        try {
+            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+            return Response.success(activityService.getActivitiesCount(uid, type, cursorAt));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
 }
