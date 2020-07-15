@@ -10,6 +10,7 @@ public class ArticleResponse {
     private String author;
     private String title;
     private String type;
+    private String excerpt;
     private String content;
     private Integer likeCount;
     private Boolean liked = false;
@@ -25,12 +26,22 @@ public class ArticleResponse {
         fromUser = new UserResponse(article.getFromUser());
         author = article.getAuthor();
         title = article.getTitle();
+        excerpt = article.getExcerpt();
         content = article.getContent();
         likeCount = article.getLikeCount();
         commentCount = article.getCommentCount();
         rateScore = article.getRateScore();
         createdAt = article.getCreatedAt();
         updatedAt = article.getUpdatedAt();
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public ArticleResponse setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+        return this;
     }
 
     public ArticleResponse setLikeCount(Integer likeCount) {

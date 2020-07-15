@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,11 @@ public class ActivityServiceImpl implements ActivityService {
             activitySet.add(activity);
             return activity;
         }
+    }
+
+    @Override
+    public Integer getActivitiesCount(Long uid, String type, Long cursorAt) {
+        return activityDao.countByCreatedAt(new User().setId(uid), type, new Date(cursorAt));
     }
 
     @Override

@@ -91,19 +91,28 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
     public Comment addComment(CommentForm form) throws Exception {
 
         if (!articleDao.existsById(form.getToArticle())) return null;
+
+        Article article = articleDao.getOne(form.getToArticle());
 
         Comment comment = new Comment();
         comment.setFromUser(new User().setId(form.getFromUser()));
         comment.setContent(form.getContent());
         comment.setLikeCount(0);
         comment.setReplyCount(0);
-        comment.setToArticle(new Article().setId(form.getToArticle()));
+        comment.setToArticle(article);
 
         comment = commentDao.save(comment);
         comment.getFromUser().setProfile(profileDao.findByUserId(new User().setId(form.getFromUser())));
+
+        ActivityForm activityForm = new ActivityForm();
+        activityForm.setType("comment");
+        activityForm.setToUser(article.getFromUser().getId());
+        activityForm.setComment(comment);
+        activityService.addActivity(activityForm);
 
         return comment;
 

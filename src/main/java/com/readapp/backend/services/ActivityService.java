@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ActivityService {
     Activity addActivity(ActivityForm form);
+    Integer getActivitiesCount(Long uid, String type, Long cursorAt);
+
     List<ActivityResponse> getLikeActivities(Long uid, int page, int capacity);
     List<ActivityResponse> getCommentActivities(Long uid, int page, int capacity);
     List<ActivityResponse> getRateActivities(Long uid, int page, int capacity);
