@@ -37,5 +37,6 @@ public class ActivityController {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
+        return Response.success(null);
     }
 }
