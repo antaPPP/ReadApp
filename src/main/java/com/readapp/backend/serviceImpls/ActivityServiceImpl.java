@@ -33,7 +33,7 @@ public class ActivityServiceImpl implements ActivityService {
             activity.setType("like");
             activity.setFromLike(form.getLike());
             activity.setUser(user);
-            if(likeDao.findByArticleUserAndType(user, "like", form.getLike().getToArticle()) != null) {
+            if(likeDao.findByUserAndArticle(user, form.getLike().getToArticle()) != null) {
                 activity = activityDao.save(activity);
                 return activity;
             }
