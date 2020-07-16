@@ -185,8 +185,9 @@ class BackendApplicationTests {
         System.out.println(activityDao.countByCreatedAt(new User().setId(1L), "comment", new Date(183938999999994L)));
     }
 
-    @Test
-    void testDislikeActivity() throws Exception{
+    //@Test
+    //void testDislikeActivity() throws Exception{
+        //List<ActivityResponse> responses = activityService.getLikeActivities(1L,  1, 10);
 
-    }
+    //}
 }
