@@ -2,6 +2,7 @@ package com.readapp.backend.dao;
 
 import com.readapp.backend.models.Activity;
 import com.readapp.backend.models.User;
+import com.readapp.backend.models.Article;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

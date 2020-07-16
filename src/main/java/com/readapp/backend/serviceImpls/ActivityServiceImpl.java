@@ -1,6 +1,7 @@
 package com.readapp.backend.serviceImpls;
 
 import com.readapp.backend.dao.ActivityDao;
+import com.readapp.backend.dao.LikeDao;
 import com.readapp.backend.dto.ActivityResponse;
 import com.readapp.backend.models.Activity;
 import com.readapp.backend.models.User;
@@ -11,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.Set;
-import java.util.HashSet;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,43 +22,47 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     ActivityDao activityDao;
+    LikeDao likeDao;
 
     @Override
     public Activity addActivity(ActivityForm form) {
-        Set activitySet = new HashSet();
         Activity activity = new Activity();
 
         if (form.getType().equals("like")) {
+            User user = new User().setId(form.getToUser());
             activity.setType("like");
             activity.setFromLike(form.getLike());
-            activity.setUser(new User().setId(form.getToUser()));
-            activity = activityDao.save(activity);
+            activity.setUser(user);
+
+            if(likeDao.findByArticleUserAndType(user, "like", form.getLike().getToArticle()) != null) {
+                activity = activityDao.save(activity);
+                return activity;
+            }
+            return null;
         } else if (form.getType().equals("comment")) {
             activity.setType("comment");
             activity.setFromComment(form.getComment());
             activity.setUser(new User().setId(form.getToUser()));
             activity = activityDao.save(activity);
+            return activity;
         } else if (form.getType().equals("follower")) {
             activity.setType("follower");
             activity.setFromUser(form.getFollower());
             activity.setUser(new User().setId(form.getToUser()));
             activity = activityDao.save(activity);
+            return activity;
         } else if (form.getType().equals("reply")) {
             activity.setFromReply(form.getReply());
             activity.setType("comment");
             activity.setUser(new User().setId(form.getToUser()));
             activity = activityDao.save(activity);
+            return activity;
         } else if (form.getType().equals("rate")) {
             /**
              * TODO: rate
              */
         }
-        if (activitySet.contains(activity)) {
-            return null;
-        } else {
-            activitySet.add(activity);
-            return activity;
-        }
+        return null;
     }
 
     @Override
