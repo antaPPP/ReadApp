@@ -30,10 +30,13 @@ public class Like {
     @ManyToOne
     private Comment toComment;
 
+    private boolean dislike;
+
     @CreationTimestamp
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
 
     public Activity getActivity() {
         return activity;
@@ -97,4 +100,12 @@ public class Like {
         this.updatedAt = updatedAt;
         return this;
     }
+
+    public boolean getDislike() { return dislike; }
+
+    public boolean setDislike(boolean dislike) {
+        this.dislike = dislike;
+        return this.dislike;
+    }
+
 }

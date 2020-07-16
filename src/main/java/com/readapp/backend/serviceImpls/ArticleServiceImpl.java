@@ -54,6 +54,8 @@ public class ArticleServiceImpl implements ArticleService {
         Like like = likeDao.findByUserAndArticle(new User().setId(uid), new Article().setId(articleId));
         Article article = articleDao.getOne(articleId);
 
+        like.setDislike(false);
+
         if (like == null && article != null) {
 
             article.setLikeCount(article.getLikeCount() + 1);
@@ -85,7 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (like != null && article != null) {
             article.setLikeCount(article.getLikeCount() - 1);
             articleDao.save(article);
-            likeDao.delete(like);
+            like.setDislike(true);
         }
 
     }
