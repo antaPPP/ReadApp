@@ -53,6 +53,8 @@ class BackendApplicationTests {
     ActivityService activityService;
     @Autowired
     ActivityDao activityDao;
+    @Autowired
+    ArticleDao articleDao;
 
     @Test
     void contextLoads() {
@@ -184,4 +186,15 @@ class BackendApplicationTests {
     void testActivityCursor() throws Exception {
         System.out.println(activityDao.countByCreatedAt(new User().setId(1L), "comment", new Date(183938999999994L)));
     }
+
+    @Test
+    void testMilktea() throws Exception {
+        SMSUtils.sendMilteaMessage();
+    }
+
+    @Test
+    void testUpdateCommentRates() throws Exception {
+        commentDao.addRate(new User().setId(1L), new Article().setId(2L), 9.0);
+    }
+
 }

@@ -48,6 +48,10 @@ public class Article implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
     private List<Like> likes;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
+    private List<Rate> rates;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
     private List<Comment> comments;
 
@@ -57,6 +61,15 @@ public class Article implements Serializable {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public Article setRates(List<Rate> rates) {
+        this.rates = rates;
+        return this;
+    }
 
     public List<Like> getLikes() {
         return likes;

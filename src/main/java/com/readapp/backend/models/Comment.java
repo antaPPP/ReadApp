@@ -42,10 +42,22 @@ public class Comment {
     @Column(name = "reply_count")
     private int replyCount;
 
+    @Column(name = "rate")
+    private Double rate;
+
     @CreationTimestamp
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public Double getRate() {
+        return rate;
+    }
+
+    public Comment setRate(Double rate) {
+        this.rate = rate;
+        return this;
+    }
 
     public Activity getActivity() {
         return activity;

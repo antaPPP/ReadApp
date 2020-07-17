@@ -15,6 +15,7 @@ public class CommentResponse {
     private Integer replyCount;
     private Integer likeCount;
     private String content;
+    private Double score;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -29,6 +30,9 @@ public class CommentResponse {
         content = comment.getContent();
         createdAt = comment.getCreatedAt();
         updatedAt = comment.getUpdatedAt();
+        if (comment.getRate() != null) {
+            score = comment.getRate();
+        }
         if (comment.getToArticle() != null) {
             toArticle = new ArticleResponse(comment.getToArticle().setContent(null));
         }
@@ -37,6 +41,15 @@ public class CommentResponse {
                 replies.add(new ReplyResponse(reply));
             }
         }
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public CommentResponse setScore(Double score) {
+        this.score = score;
+        return this;
     }
 
     public ArticleResponse getToArticle() {

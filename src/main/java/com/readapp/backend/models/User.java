@@ -64,6 +64,9 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toUser")
     private List<Message> receivedMessages;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
+    private List<Rate> rates;
+
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "follows")
     private List<User> followers;
 
@@ -110,6 +113,15 @@ public class User implements Serializable {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public User setRates(List<Rate> rates) {
+        this.rates = rates;
+        return this;
     }
 
     public List<Activity> getFollowActivities() {

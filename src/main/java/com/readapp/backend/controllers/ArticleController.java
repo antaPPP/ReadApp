@@ -38,7 +38,7 @@ public class ArticleController {
     @RequestMapping(value = "/article", method = RequestMethod.GET)
     public Response getArticle(
            @RequestParam(value = "userId", required = false) Long uid,
-            @RequestParam("id") Long id) {
+           @RequestParam("id") Long id) {
         try {
             if (uid != null) {
                 return Response.success(articleService.getArticle(id).setLiked(articleService.checkLiked(uid, id)));
@@ -99,14 +99,18 @@ public class ArticleController {
     @RequestMapping(value = "/article/comments", method = RequestMethod.GET)
     public Response getArticleComments(@RequestParam("id") Long id,
                                        @RequestParam("page") int page,
+                                       @RequestParam(value = "withRate", defaultValue = "false") boolean withRate,
                                        @RequestParam("capacity") int capacity) {
         try {
+            if (withRate) return Response.success(articleService.getArticleCommentsWithRate(id, page, capacity));
             return Response.success(articleService.getArticleComments(id, page, capacity));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
     }
+
+
 
     @RequestMapping(value = "/articles", method = RequestMethod.GET)
     @RequiresAuthentication
@@ -122,6 +126,35 @@ public class ArticleController {
             } else {
                 return Response.success(articleService.getArticles(id, page, capacity));
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
+
+    @RequestMapping(value = "/article/rate", method = RequestMethod.POST)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response addArticleRate(@RequestHeader("Authorization") String Authorization,
+                                   @RequestParam("toArticle") Long toArticle,
+                                   @RequestParam("score") Double score) {
+        try {
+            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+            return Response.success(articleService.addRate(uid, toArticle, score));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+    }
+
+    @RequestMapping(value = "/article/rate", method = RequestMethod.GET)
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response getUserArticleRate(@RequestHeader("Authorization") String Authorization,
+                                   @RequestParam("articleId") Long articleId){
+        try {
+            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+            return Response.success(articleService.getArticleRate(uid, articleId));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
