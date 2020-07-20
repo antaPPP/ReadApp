@@ -36,6 +36,9 @@ public class Comment {
     @OneToMany(mappedBy = "toComment", cascade = CascadeType.ALL)
     private List<Like> likes;
 
+    @Column(name = "picture_urls")
+    private String pictureUrls;
+
     @Column(name = "like_count")
     private int likeCount;
 
@@ -49,6 +52,15 @@ public class Comment {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public String getPictureUrls() {
+        return pictureUrls;
+    }
+
+    public Comment setPictureUrls(String pictureUrls) {
+        this.pictureUrls = pictureUrls;
+        return this;
+    }
 
     public Double getRate() {
         return rate;

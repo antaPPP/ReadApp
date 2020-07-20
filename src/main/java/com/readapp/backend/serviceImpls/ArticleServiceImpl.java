@@ -1,5 +1,7 @@
 package com.readapp.backend.serviceImpls;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.readapp.backend.dao.*;
 import com.readapp.backend.dto.ArticleResponse;
 import com.readapp.backend.dto.CommentResponse;
@@ -50,6 +52,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     RateDao rateDao;
+
+    @Autowired
+    PageViewDao pageViewDao;
 
     @Override
     @Transactional
@@ -111,7 +116,17 @@ public class ArticleServiceImpl implements ArticleService {
         comment.setReplyCount(0);
         comment.setToArticle(article);
 
+        if (form.getImageUrls() != null){
+            /**
+             * TODO: Validate picture urls
+             */
+            String pictureUrls = JSON.toJSONString(form.getImageUrls());
+            comment.setPictureUrls(pictureUrls);
+        }
+
         comment = commentDao.save(comment);
+        article.setCommentCount(article.getCommentCount() + 1);
+        article = articleDao.save(article);
         comment.getFromUser().setProfile(profileDao.findByUserId(new User().setId(form.getFromUser())));
 
         ActivityForm activityForm = new ActivityForm();
@@ -145,6 +160,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCoverUrl(form.getCoverUrl());
         article.setCommentCount(0);
         article.setLikeCount(0);
+        article.setViewCount(0);
         article.setRateScore(0.);
         article.setExcerpt(form.getExcerpt());
         article.setFromUser(user);
@@ -152,6 +168,15 @@ public class ArticleServiceImpl implements ArticleService {
         article = articleDao.save(article);
 
         return new ArticleResponse(article);
+    }
+
+    @Override
+    public void addViewCount(Long uid, Long articleId) {
+        if (!userDao.existsById(uid) || !articleDao.existsById(articleId) || pageViewDao.findByFromUserAndToArticle(new User().setId(uid), new Article().setId(articleId)) != null) return;
+        Article article = articleDao.getOne(articleId);
+        article = articleDao.save(article.setViewCount(article.getViewCount() + 1));
+        PageView view = new PageView().setFromUser(new User().setId(uid)).setToArticle(article);
+        pageViewDao.save(view);
     }
 
     @Override

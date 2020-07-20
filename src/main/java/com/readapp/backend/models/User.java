@@ -74,6 +74,9 @@ public class User implements Serializable {
     private List<User> follows;
 
     @OneToMany(mappedBy = "fromUser")
+    private List<PageView> pageViews;
+
+    @OneToMany(mappedBy = "fromUser")
     private List<Activity> followActivities;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -113,6 +116,15 @@ public class User implements Serializable {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<PageView> getPageViews() {
+        return pageViews;
+    }
+
+    public User setPageViews(List<PageView> pageViews) {
+        this.pageViews = pageViews;
+        return this;
     }
 
     public List<Rate> getRates() {

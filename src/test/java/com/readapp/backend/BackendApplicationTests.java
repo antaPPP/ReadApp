@@ -1,5 +1,6 @@
 package com.readapp.backend;
 
+import com.alibaba.fastjson.JSONArray;
 import com.readapp.backend.dao.*;
 import com.readapp.backend.dto.ActivityResponse;
 import com.readapp.backend.models.*;
@@ -195,6 +196,13 @@ class BackendApplicationTests {
     @Test
     void testUpdateCommentRates() throws Exception {
         commentDao.addRate(new User().setId(1L), new Article().setId(2L), 9.0);
+    }
+
+    @Test
+    void testJSON() throws Exception {
+        String ary = "[\"1\", \"2\"]";
+        JSONArray array = JSONArray.parseArray(ary);
+        System.out.println(array.get(0).toString());
     }
 
 }
