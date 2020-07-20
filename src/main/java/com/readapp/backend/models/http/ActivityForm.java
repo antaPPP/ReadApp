@@ -1,17 +1,25 @@
 package com.readapp.backend.models.http;
 
-import com.readapp.backend.models.Comment;
-import com.readapp.backend.models.Like;
-import com.readapp.backend.models.Reply;
-import com.readapp.backend.models.User;
+import com.readapp.backend.models.*;
 
 public class ActivityForm {
     private String type;
     private Long toUser;
     private Like like;
     private Comment comment;
+    private Rate rate;
     private Reply reply;
     private User follower;
+
+
+    public Rate getRate() {
+        return rate;
+    }
+
+    public ActivityForm setRate(Rate rate) {
+        this.rate = rate;
+        return this;
+    }
 
     public Long getToUser() {
         return toUser;

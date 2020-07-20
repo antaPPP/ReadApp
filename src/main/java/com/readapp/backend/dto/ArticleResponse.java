@@ -15,6 +15,7 @@ public class ArticleResponse {
     private String content;
     private Integer likeCount;
     private Boolean liked = false;
+    private Integer viewCounts = 0;
     private Integer commentCount;
     private Double rateScore;
     private Timestamp createdAt;
@@ -30,11 +31,21 @@ public class ArticleResponse {
         excerpt = article.getExcerpt();
         coverUrl = article.getCoverUrl();
         content = article.getContent();
+        viewCounts = article.getViewCount();
         likeCount = article.getLikeCount();
         commentCount = article.getCommentCount();
         rateScore = article.getRateScore();
         createdAt = article.getCreatedAt();
         updatedAt = article.getUpdatedAt();
+    }
+
+    public Integer getViewCounts() {
+        return viewCounts;
+    }
+
+    public ArticleResponse setViewCounts(Integer viewCounts) {
+        this.viewCounts = viewCounts;
+        return this;
     }
 
     public String getCoverUrl() {

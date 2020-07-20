@@ -1,5 +1,6 @@
 package com.readapp.backend.dto;
 
+import com.alibaba.fastjson.JSONArray;
 import com.readapp.backend.models.Comment;
 import com.readapp.backend.models.Reply;
 
@@ -12,9 +13,11 @@ public class CommentResponse {
     private UserResponse fromUser;
     private ArticleResponse toArticle;
     private List<ReplyResponse> replies;
+    private List<String> imageUrls;
     private Integer replyCount;
     private Integer likeCount;
     private String content;
+    private Double score;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -29,6 +32,16 @@ public class CommentResponse {
         content = comment.getContent();
         createdAt = comment.getCreatedAt();
         updatedAt = comment.getUpdatedAt();
+        if (comment.getPictureUrls() != null) {
+            JSONArray jsonArray = JSONArray.parseArray(comment.getPictureUrls());
+            this.imageUrls = new ArrayList<>();
+            for (Object item : jsonArray) {
+                imageUrls.add(item.toString());
+            }
+        }
+        if (comment.getRate() != null) {
+            score = comment.getRate();
+        }
         if (comment.getToArticle() != null) {
             toArticle = new ArticleResponse(comment.getToArticle().setContent(null));
         }
@@ -37,6 +50,24 @@ public class CommentResponse {
                 replies.add(new ReplyResponse(reply));
             }
         }
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public CommentResponse setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+        return this;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public CommentResponse setScore(Double score) {
+        this.score = score;
+        return this;
     }
 
     public ArticleResponse getToArticle() {

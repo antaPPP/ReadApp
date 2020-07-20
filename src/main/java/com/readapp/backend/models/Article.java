@@ -40,6 +40,9 @@ public class Article implements Serializable {
     @Column(name = "comment_count")
     private Integer commentCount;
 
+    @Column(name = "view_count")
+    private Integer viewCount;
+
     @Column(name = "like_count")
     private Integer likeCount;
 
@@ -48,8 +51,15 @@ public class Article implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
     private List<Like> likes;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
+    private List<Rate> rates;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
     private List<Comment> comments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
+    private List<PageView> pageViews;
 
     private boolean isRated;
 
@@ -57,6 +67,33 @@ public class Article implements Serializable {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public Integer getViewCount() {
+        return viewCount;
+    }
+
+    public Article setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+        return this;
+    }
+
+    public List<PageView> getPageViews() {
+        return pageViews;
+    }
+
+    public Article setPageViews(List<PageView> pageViews) {
+        this.pageViews = pageViews;
+        return this;
+    }
+
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public Article setRates(List<Rate> rates) {
+        this.rates = rates;
+        return this;
+    }
 
     public List<Like> getLikes() {
         return likes;

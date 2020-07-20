@@ -34,10 +34,22 @@ public class Activity {
     @OneToOne
     private Reply fromReply;
 
+    @OneToOne
+    private Rate fromRate;
+
     @CreationTimestamp
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public Rate getFromRate() {
+        return fromRate;
+    }
+
+    public Activity setFromRate(Rate fromRate) {
+        this.fromRate = fromRate;
+        return this;
+    }
 
     public User getUser() {
         return user;

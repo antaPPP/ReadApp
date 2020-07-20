@@ -64,11 +64,17 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toUser")
     private List<Message> receivedMessages;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
+    private List<Rate> rates;
+
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "follows")
     private List<User> followers;
 
     @ManyToMany
     private List<User> follows;
+
+    @OneToMany(mappedBy = "fromUser")
+    private List<PageView> pageViews;
 
     @OneToMany(mappedBy = "fromUser")
     private List<Activity> followActivities;
@@ -110,6 +116,24 @@ public class User implements Serializable {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<PageView> getPageViews() {
+        return pageViews;
+    }
+
+    public User setPageViews(List<PageView> pageViews) {
+        this.pageViews = pageViews;
+        return this;
+    }
+
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public User setRates(List<Rate> rates) {
+        this.rates = rates;
+        return this;
     }
 
     public List<Activity> getFollowActivities() {

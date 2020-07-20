@@ -33,11 +33,20 @@ public class ActivityServiceImpl implements ActivityService {
             activity.setType("like");
             activity.setFromLike(form.getLike());
             activity.setUser(user);
+<<<<<<< HEAD
+//            if(likeDao.findByArticleUserAndType(user, "like", form.getLike().getToArticle()) != null) {
+//                activity = activityDao.save(activity);
+//                return activity;
+//            }
+            activity = activityDao.save(activity);
+            return activity;
+=======
             if(likeDao.findByUserAndArticle(user, form.getLike().getToArticle()) != null) {
                 activity = activityDao.save(activity);
                 return activity;
             }
             return null;
+>>>>>>> b226d363b9887d790c67821fc6dc437f184d3ca3
         } else if (form.getType().equals("comment")) {
             activity.setType("comment");
             activity.setFromComment(form.getComment());

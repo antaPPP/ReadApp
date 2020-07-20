@@ -1,8 +1,11 @@
 package com.readapp.backend.serviceImpls;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.readapp.backend.dao.*;
 import com.readapp.backend.dto.ArticleResponse;
 import com.readapp.backend.dto.CommentResponse;
+import com.readapp.backend.dto.RateResponse;
 import com.readapp.backend.dto.ReplyResponse;
 import com.readapp.backend.models.*;
 import com.readapp.backend.models.http.ActivityForm;
@@ -46,6 +49,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     ActivityService activityService;
+
+    @Autowired
+    RateDao rateDao;
+
+    @Autowired
+    PageViewDao pageViewDao;
 
     @Override
     @Transactional
@@ -107,7 +116,17 @@ public class ArticleServiceImpl implements ArticleService {
         comment.setReplyCount(0);
         comment.setToArticle(article);
 
+        if (form.getImageUrls() != null){
+            /**
+             * TODO: Validate picture urls
+             */
+            String pictureUrls = JSON.toJSONString(form.getImageUrls());
+            comment.setPictureUrls(pictureUrls);
+        }
+
         comment = commentDao.save(comment);
+        article.setCommentCount(article.getCommentCount() + 1);
+        article = articleDao.save(article);
         comment.getFromUser().setProfile(profileDao.findByUserId(new User().setId(form.getFromUser())));
 
         ActivityForm activityForm = new ActivityForm();
@@ -141,6 +160,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCoverUrl(form.getCoverUrl());
         article.setCommentCount(0);
         article.setLikeCount(0);
+        article.setViewCount(0);
         article.setRateScore(0.);
         article.setExcerpt(form.getExcerpt());
         article.setFromUser(user);
@@ -148,6 +168,15 @@ public class ArticleServiceImpl implements ArticleService {
         article = articleDao.save(article);
 
         return new ArticleResponse(article);
+    }
+
+    @Override
+    public void addViewCount(Long uid, Long articleId) {
+        if (!userDao.existsById(uid) || !articleDao.existsById(articleId) || pageViewDao.findByFromUserAndToArticle(new User().setId(uid), new Article().setId(articleId)) != null) return;
+        Article article = articleDao.getOne(articleId);
+        article = articleDao.save(article.setViewCount(article.getViewCount() + 1));
+        PageView view = new PageView().setFromUser(new User().setId(uid)).setToArticle(article);
+        pageViewDao.save(view);
     }
 
     @Override
@@ -171,7 +200,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResponse getArticle(Long id) throws Exception {
         Article article = articleDao.getOne(id);
-
         if (article == null) throw new NoSuchElementException();
         return new ArticleResponse(article);
     }
@@ -222,9 +250,25 @@ public class ArticleServiceImpl implements ArticleService {
                 page - 1,
                 capacity
         );
-        System.out.println(articleId);
-        Page<Comment> comments = commentDao.findByArticle(new Article().setId(articleId), pageable);
-        System.out.println("Count: " + comments.toList().size());
+        Article article = articleDao.getOne(articleId);
+        Page<Comment> comments = commentDao.findByArticle(article, pageable);
+        List<CommentResponse> responses = new ArrayList<>();
+
+        for (Comment comment : comments.toList()) {
+            responses.add(new CommentResponse(comment));
+        }
+
+        return responses;
+    }
+
+    @Override
+    public List<CommentResponse> getArticleCommentsWithRate(Long articleId, int page, int capacity) throws Exception {
+        Pageable pageable = PageRequest.of(
+                page - 1,
+                capacity
+        );
+        Article article = articleDao.getOne(articleId);
+        Page<Comment> comments = commentDao.findByArticleWithRate(article, pageable);
         List<CommentResponse> responses = new ArrayList<>();
 
         for (Comment comment : comments.toList()) {
@@ -273,6 +317,49 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return responses;
+    }
+
+    @Override
+    @Transactional
+    public RateResponse addRate(Long uid, Long toArticle, Double score) throws Exception {
+
+        Article article = articleDao.getOne(toArticle);
+
+        if (score > 10 || score < 1) return null;
+
+        if (article == null) return null;
+
+        Rate rate = rateDao.findByFromUserAndToArticle(new User().setId(uid), article);
+
+        if (rate != null) return null;
+
+        int count = rateDao.countRates(article);
+
+        double oldScore = article.getRateScore();
+        double newScore = (count * oldScore + score) / (count + 1);
+
+        article = articleDao.save(article.setRateScore(newScore));
+
+        rate = new Rate().setToArticle(article).setScore(score).setFromUser(new User().setId(uid));
+        rate = rateDao.save(rate);
+
+        ActivityForm activityForm = new ActivityForm();
+        activityForm.setType("rate");
+        activityForm.setToUser(article.getFromUser().getId());
+        activityForm.setRate(rate);
+
+        activityService.addActivity(activityForm);
+
+        commentDao.addRate(new User().setId(uid), article, score);
+
+        return new RateResponse(rate).setCurrentScore(newScore);
+    }
+
+    @Override
+    public Double getArticleRate(Long uid, Long toArticle) throws Exception {
+        Rate rate = rateDao.findByFromUserAndToArticle(new User().setId(uid), new Article().setId(toArticle));
+        if (rate == null) return 0.0;
+        return rate.getScore();
     }
 
     @Override
