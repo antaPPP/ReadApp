@@ -15,7 +15,4 @@ public interface LikeDao extends JpaRepository<Like, Long> {
 
     @Query(value = "SELECT l FROM Like l WHERE l.fromUser = ?1 AND  l.toArticle is not Null")
     Page<Like> findLikedArticlesByFromUser(User user, Pageable pageable);
-
-//    @Query(value = "SELECT a FROM Activity a WHERE a.user = ?1 AND a.type = ?2 AND a.article = ?3")
-//    Like findByArticleUserAndType(User user, String type, Article article);
 }
