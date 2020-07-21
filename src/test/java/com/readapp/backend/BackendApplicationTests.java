@@ -188,7 +188,6 @@ class BackendApplicationTests {
         System.out.println(activityDao.countByCreatedAt(new User().setId(1L), "comment", new Date(183938999999994L)));
     }
 
-<<<<<<< HEAD
     @Test
     void testMilktea() throws Exception {
         SMSUtils.sendMilteaMessage();
@@ -206,11 +205,4 @@ class BackendApplicationTests {
         System.out.println(array.get(0).toString());
     }
 
-=======
-    //@Test
-    //void testDislikeActivity() throws Exception{
-        //List<ActivityResponse> responses = activityService.getLikeActivities(1L,  1, 10);
-
-    //}
->>>>>>> b226d363b9887d790c67821fc6dc437f184d3ca3
 }
