@@ -38,8 +38,6 @@ public class ForgetPasswordController {
         }
     }
 
-    //forgetPasswordService.setNewPassword(newPassword, countryCode, mobile);
-    //
 
     @RequestMapping (value = "/forgetPassword/update", method = RequestMethod.POST)
     public Response updatePassword(
