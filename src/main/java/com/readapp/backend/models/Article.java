@@ -61,8 +61,6 @@ public class Article implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "toArticle")
     private List<PageView> pageViews;
 
-    private boolean isRated;
-
     @CreationTimestamp
     private Timestamp createdAt;
     @UpdateTimestamp
@@ -200,15 +198,6 @@ public class Article implements Serializable {
 
     public Article setRateScore(Double rateScore) {
         this.rateScore = rateScore;
-        return this;
-    }
-
-    public boolean isRated() {
-        return isRated;
-    }
-
-    public Article setRated(boolean rated) {
-        isRated = rated;
         return this;
     }
 
