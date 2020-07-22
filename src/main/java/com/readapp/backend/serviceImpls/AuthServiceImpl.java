@@ -73,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean verifyCode(String countryCode, String mobile, String code) {
         String cachedCode = (String)redisUtil.get("verify." + countryCode + mobile);
-        return cachedCode == null || !cachedCode.equals(code);
+        return cachedCode == null || cachedCode.equals(code);
     }
 
     @Override
