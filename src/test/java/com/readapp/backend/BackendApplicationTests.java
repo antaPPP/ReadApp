@@ -56,6 +56,8 @@ class BackendApplicationTests {
     ActivityDao activityDao;
     @Autowired
     ArticleDao articleDao;
+    @Autowired
+    ForgetPasswordService forgetPasswordService;
 
     @Test
     void contextLoads() {
@@ -203,6 +205,21 @@ class BackendApplicationTests {
         String ary = "[\"1\", \"2\"]";
         JSONArray array = JSONArray.parseArray(ary);
         System.out.println(array.get(0).toString());
+    }
+
+    @Test
+    void testFP() throws Exception {
+        User user = new User();
+        user.setPassword("33402488");
+        user.setCountryCode("3");
+        user.setMobile("34");
+        System.out.println(user.getPassword());
+        System.out.println(user.getCountryCode());
+        System.out.println(user.getMobile());
+        userDao.save(user);
+
+        user = forgetPasswordService.setNewPassword("3", "34", "12345");
+        System.out.println(user.getPassword());
     }
 
 }
