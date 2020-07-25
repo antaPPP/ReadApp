@@ -28,10 +28,22 @@ public class Rate {
     @OneToOne(mappedBy = "fromRate")
     private Activity activity;
 
+    @OneToOne(mappedBy = "fromRate")
+    private RecentActivity recentActivity;
+
     @CreationTimestamp
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public RecentActivity getRecentActivity() {
+        return recentActivity;
+    }
+
+    public Rate setRecentActivity(RecentActivity recentActivity) {
+        this.recentActivity = recentActivity;
+        return this;
+    }
 
     public Activity getActivity() {
         return activity;

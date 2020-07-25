@@ -21,6 +21,9 @@ public class Like {
     @OneToOne(mappedBy = "fromLike")
     private Activity activity;
 
+    @OneToOne(mappedBy = "fromLike")
+    private RecentActivity recentActivity;
+
     @ManyToOne
     private User fromUser;
 
@@ -30,6 +33,7 @@ public class Like {
     @ManyToOne
     private Comment toComment;
 
+    @Column(name = "disliked")
     private boolean dislike;
 
     @CreationTimestamp
@@ -37,6 +41,18 @@ public class Like {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    public boolean isDislike() {
+        return dislike;
+    }
+
+    public RecentActivity getRecentActivity() {
+        return recentActivity;
+    }
+
+    public Like setRecentActivity(RecentActivity recentActivity) {
+        this.recentActivity = recentActivity;
+        return this;
+    }
 
     public Activity getActivity() {
         return activity;

@@ -1,7 +1,6 @@
 package com.readapp.backend.serviceImpls;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.readapp.backend.dao.*;
 import com.readapp.backend.dto.ArticleResponse;
 import com.readapp.backend.dto.CommentResponse;
@@ -12,6 +11,7 @@ import com.readapp.backend.models.http.ActivityForm;
 import com.readapp.backend.models.http.ArticleForm;
 import com.readapp.backend.models.http.CommentForm;
 import com.readapp.backend.models.http.ReplyForm;
+import com.readapp.backend.serviceImpls.async.AsyncRecentActivityTask;
 import com.readapp.backend.services.ActivityService;
 import com.readapp.backend.services.ArticleService;
 import com.readapp.backend.utils.StringUtils;
@@ -55,6 +55,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     PageViewDao pageViewDao;
+
+    @Autowired
+    RecentActivityDao recentActivityDao;
+
+    @Autowired
+    AsyncRecentActivityTask asyncRecentActivityTask;
 
     @Override
     @Transactional
@@ -135,6 +141,13 @@ public class ArticleServiceImpl implements ArticleService {
         activityForm.setComment(comment);
         activityService.addActivity(activityForm);
 
+        // Recent activity
+        RecentActivity recentActivity = new RecentActivity();
+        recentActivity.setUser(new User().setId(form.getFromUser()));
+        recentActivity.setFromComment(comment);
+
+        recentActivityDao.save(recentActivity);
+
         return comment;
 
     }
@@ -162,10 +175,18 @@ public class ArticleServiceImpl implements ArticleService {
         article.setLikeCount(0);
         article.setViewCount(0);
         article.setRateScore(0.);
-        article.setExcerpt(form.getExcerpt());
+        article.setExcerpt(form.getdd Excerpt());
         article.setFromUser(user);
 
         article = articleDao.save(article);
+
+        RecentActivity recentActivity = new RecentActivity();
+        recentActivity.setFromUser(user);
+        recentActivity.setFromArticle(article);
+
+        recentActivity = recentActivityDao.save(recentActivity);
+
+        asyncRecentActivityTask.insertRecentActivities(recentActivity);
 
         return new ArticleResponse(article);
     }
@@ -352,6 +373,14 @@ public class ArticleServiceImpl implements ArticleService {
 
         commentDao.addRate(new User().setId(uid), article, score);
 
+
+        RecentActivity recentActivity = new RecentActivity();
+        recentActivity.setUser(new User().setId(uid));
+        recentActivity.setFromRate(rate);
+
+        recentActivityDao.save(recentActivity);
+
+
         return new RateResponse(rate).setCurrentScore(newScore);
     }
 
@@ -367,4 +396,5 @@ public class ArticleServiceImpl implements ArticleService {
         Like like = likeDao.findByUserAndArticle(new User().setId(uid), new Article().setId(articleId));
         return like != null;
     }
+
 }

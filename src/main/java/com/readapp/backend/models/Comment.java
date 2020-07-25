@@ -21,6 +21,9 @@ public class Comment {
     @OneToOne(mappedBy = "fromComment")
     private Activity activity;
 
+    @OneToOne(mappedBy = "fromComment")
+    private RecentActivity recentActivity;
+
     @ManyToOne
     private User fromUser;
 
@@ -35,6 +38,7 @@ public class Comment {
 
     @OneToMany(mappedBy = "toComment", cascade = CascadeType.ALL)
     private List<Like> likes;
+
 
     @Column(name = "picture_urls")
     private String pictureUrls;
@@ -52,6 +56,15 @@ public class Comment {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public RecentActivity getRecentActivity() {
+        return recentActivity;
+    }
+
+    public Comment setRecentActivity(RecentActivity recentActivity) {
+        this.recentActivity = recentActivity;
+        return this;
+    }
 
     public String getPictureUrls() {
         return pictureUrls;

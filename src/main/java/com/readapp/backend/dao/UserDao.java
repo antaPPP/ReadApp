@@ -19,6 +19,9 @@ public interface UserDao extends JpaRepository<User, Long> {
 
     List<User> findByFollowers_Id(Long id);
 
+    @Query(value = "SELECT followers_id FROM user_follows WHERE follows_id = ?1", nativeQuery = true)
+    List<Long> findFollowerIds(Long id);
+
     @Query(value = "SELECT u FROM Profile p, User u WHERE p.nickname LIKE CONCAT('%',?1,'%') AND u.profile = p ")
     Page<User> searchByKeyword(String keyword, Pageable pageable);
 

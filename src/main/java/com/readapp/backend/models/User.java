@@ -82,6 +82,14 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Activity> activities;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<RecentActivity> followRecentActivities;
+
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
+    private List<RecentActivity> recentActivities;
+
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL)
+    private List<RecentActivity> followerActivities;
 
     @Column(name = "likeCount")
     private int likeCount;
@@ -116,6 +124,33 @@ public class User implements Serializable {
         this.profile = profile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public List<RecentActivity> getFollowRecentActivities() {
+        return followRecentActivities;
+    }
+
+    public User setFollowRecentActivities(List<RecentActivity> followRecentActivities) {
+        this.followRecentActivities = followRecentActivities;
+        return this;
+    }
+
+    public List<RecentActivity> getRecentActivities() {
+        return recentActivities;
+    }
+
+    public User setRecentActivities(List<RecentActivity> recentActivities) {
+        this.recentActivities = recentActivities;
+        return this;
+    }
+
+    public List<RecentActivity> getFollowerActivities() {
+        return followerActivities;
+    }
+
+    public User setFollowerActivities(List<RecentActivity> followerActivities) {
+        this.followerActivities = followerActivities;
+        return this;
     }
 
     public List<PageView> getPageViews() {

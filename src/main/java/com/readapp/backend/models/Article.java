@@ -23,6 +23,9 @@ public class Article implements Serializable {
     @JoinColumn
     private User fromUser;
 
+    @OneToOne(mappedBy = "fromArticle")
+    private RecentActivity recentActivity;
+
     @Column(name = "title")
     private String title;
     @Column(name = "author")
@@ -65,6 +68,15 @@ public class Article implements Serializable {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public RecentActivity getRecentActivity() {
+        return recentActivity;
+    }
+
+    public Article setRecentActivity(RecentActivity recentActivity) {
+        this.recentActivity = recentActivity;
+        return this;
+    }
 
     public Integer getViewCount() {
         return viewCount;

@@ -205,4 +205,17 @@ class BackendApplicationTests {
         System.out.println(array.get(0).toString());
     }
 
+    @Test
+    void testFindIds() throws Exception {
+        List<Long> ids = userDao.findFollowerIds(1L);
+        System.out.println(ids.size());
+    }
+
+    @Test
+    void testAsync() throws Exception {
+        redisUtil.lpush("ras:test01", 2L);
+        redisUtil.lpush("ras:test01", 6L);
+        System.out.println(((Integer)redisUtil.range("ras:test01", 0, 5).get(0)).longValue());
+    }
+
 }

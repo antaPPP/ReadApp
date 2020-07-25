@@ -799,8 +799,7 @@ public final class RedisUtil {
      *              433
      * @param value 值
      *              434
-     * @param time  时间(秒)
-     *              435
+     *
      * @return 436
      */
 
@@ -861,9 +860,6 @@ public final class RedisUtil {
      * @param key   键
      *              469
      * @param value 值
-     *              470
-     * @param time  时间(秒)
-     *              471
      * @return 472
      */
 
@@ -986,5 +982,14 @@ public final class RedisUtil {
 
         }
 
+    }
+
+    public void lpush(String key, Object value){
+        redisTemplate.opsForList().leftPush(key, value);
+    }
+
+    public List<Object> range(String key, long start, long end) {
+        List<Object> list = redisTemplate.opsForList().range(key, start, end);
+        return list;
     }
 }
