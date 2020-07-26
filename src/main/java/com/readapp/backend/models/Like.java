@@ -25,6 +25,9 @@ public class Like {
     private RecentActivity recentActivity;
 
     @ManyToOne
+    private RecentActivity toRecentActivity;
+
+    @ManyToOne
     private User fromUser;
 
     @ManyToOne
@@ -34,12 +37,21 @@ public class Like {
     private Comment toComment;
 
     @Column(name = "disliked")
-    private boolean dislike;
+    private boolean dislike = true;
 
     @CreationTimestamp
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public RecentActivity getToRecentActivity() {
+        return toRecentActivity;
+    }
+
+    public Like setToRecentActivity(RecentActivity toRecentActivity) {
+        this.toRecentActivity = toRecentActivity;
+        return this;
+    }
 
     public boolean isDislike() {
         return dislike;
@@ -119,9 +131,8 @@ public class Like {
 
     public boolean getDislike() { return dislike; }
 
-    public boolean setDislike(boolean dislike) {
+    public Like setDislike(boolean dislike) {
         this.dislike = dislike;
-        return this.dislike;
+        return this;
     }
-
 }

@@ -38,8 +38,17 @@ public class RecentActivity {
     @OneToOne
     private Rate fromRate;
 
-    @OneToMany
+    @OneToMany(mappedBy = "toRecentActivity")
+    private List<Like> likes;
+
+    @Column(name = "like_count")
+    private Integer likeCount = 0;
+
+    @OneToMany(mappedBy = "toRecentActivity", fetch = FetchType.EAGER)
     private List<Reply> replies;
+
+    @OneToMany(mappedBy = "fromRecentActivity")
+    private List<Activity> activities;
 
     @CreationTimestamp
     private Timestamp createdAt;
@@ -47,6 +56,32 @@ public class RecentActivity {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public RecentActivity setActivities(List<Activity> activities) {
+        this.activities = activities;
+        return this;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public RecentActivity setLikes(List<Like> likes) {
+        this.likes = likes;
+        return this;
+    }
+
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+
+    public RecentActivity setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
+        return this;
+    }
 
     public User getUser() {
         return user;

@@ -15,17 +15,10 @@ import com.readapp.backend.utils.SMSUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BackendApplicationTests {
@@ -56,6 +49,8 @@ class BackendApplicationTests {
     ActivityDao activityDao;
     @Autowired
     ArticleDao articleDao;
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
 
     @Test
     void contextLoads() {
@@ -213,9 +208,28 @@ class BackendApplicationTests {
 
     @Test
     void testAsync() throws Exception {
-        redisUtil.lpush("ras:test01", 2L);
-        redisUtil.lpush("ras:test01", 6L);
-        System.out.println(((Integer)redisUtil.range("ras:test01", 0, 5).get(0)).longValue());
+        System.out.println(((Integer)redisUtil.range("ras:2", 0, 5).get(0)).longValue());
+    }
+
+    @Test
+    void clearRedis() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            // 获取所有key
+            Set<String> keys = stringRedisTemplate.keys("*");
+            assert keys != null;
+            // 迭代
+            Iterator<String> it1 = keys.iterator();
+            while (it1.hasNext()) {
+                // 循环删除
+                stringRedisTemplate.delete(it1.next());
+            }
+            map.put("code", 1);
+            map.put("msg", "清理全局缓存成功");
+        } catch (Exception e) {
+            map.put("code", -1);
+            map.put("msg", "清理全局缓存失败");
+        }
     }
 
 }

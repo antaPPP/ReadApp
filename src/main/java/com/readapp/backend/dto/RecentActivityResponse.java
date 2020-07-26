@@ -2,13 +2,19 @@ package com.readapp.backend.dto;
 
 import com.readapp.backend.models.Like;
 import com.readapp.backend.models.RecentActivity;
+import com.readapp.backend.models.Reply;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecentActivityResponse {
     private String id;
     private UserResponse fromUser;
     private String type;
+    private Integer likeCount;
+    private boolean liked;
+    private List<ReplyResponse> replies;
     private LikeResponse fromLike;
     private CommentResponse fromComment;
     private ArticleResponse fromArticle;
@@ -32,14 +38,49 @@ public class RecentActivityResponse {
         }
         if (activity.getFromArticle() != null) {
             type = "article";
-            fromArticle = new ArticleResponse(activity.getFromArticle());
+            fromArticle = new ArticleResponse(activity.getFromArticle()).setContent(null);
         }
         if (activity.getFromRate() != null) {
             type = "rate";
             fromRate = new RateResponse(activity.getFromRate());
         }
+        replies = new ArrayList<>();
+        if (activity.getReplies() != null) {
+            for (Reply reply : activity.getReplies()) {
+                replies.add(new ReplyResponse(reply));
+            }
+        }
+        likeCount = activity.getLikeCount();
+
         createdAt = activity.getCreatedAt();
         updatedAt = activity.getUpdatedAt();
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public RecentActivityResponse setLiked(boolean liked) {
+        this.liked = liked;
+        return this;
+    }
+
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+
+    public RecentActivityResponse setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
+        return this;
+    }
+
+    public List<ReplyResponse> getReplies() {
+        return replies;
+    }
+
+    public RecentActivityResponse setReplies(List<ReplyResponse> replies) {
+        this.replies = replies;
+        return this;
     }
 
     public String getType() {

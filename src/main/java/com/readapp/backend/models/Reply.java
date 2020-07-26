@@ -31,10 +31,22 @@ public class Reply {
     @OneToOne(mappedBy = "fromReply")
     private Activity activity;
 
+    @ManyToOne
+    private RecentActivity toRecentActivity;
+
     @UpdateTimestamp
     private Timestamp updatedAt;
     @CreationTimestamp
     private Timestamp createdAt;
+
+    public RecentActivity getToRecentActivity() {
+        return toRecentActivity;
+    }
+
+    public Reply setToRecentActivity(RecentActivity toRecentActivity) {
+        this.toRecentActivity = toRecentActivity;
+        return this;
+    }
 
     public Activity getActivity() {
         return activity;

@@ -28,6 +28,9 @@ public class Activity {
     @OneToOne
     private Like fromLike;
 
+    @ManyToOne
+    private RecentActivity fromRecentActivity;
+
     @OneToOne
     private Comment fromComment;
 
@@ -41,6 +44,15 @@ public class Activity {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public RecentActivity getFromRecentActivity() {
+        return fromRecentActivity;
+    }
+
+    public Activity setFromRecentActivity(RecentActivity fromRecentActivity) {
+        this.fromRecentActivity = fromRecentActivity;
+        return this;
+    }
 
     public Rate getFromRate() {
         return fromRate;

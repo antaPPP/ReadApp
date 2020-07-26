@@ -18,7 +18,7 @@ public class LikeResponse {
     public LikeResponse(Like like){
         id = String.valueOf(like.getId());
         fromUser =  new UserResponse(like.getFromUser());
-        toArticle = new ArticleResponse(like.getToArticle()).setContent(null).setFromUser(null);
+        toArticle = new ArticleResponse(like.getToArticle()).setContent(null);
         createdAt = like.getCreatedAt();
         updatedAt = like.getUpdatedAt();
     }

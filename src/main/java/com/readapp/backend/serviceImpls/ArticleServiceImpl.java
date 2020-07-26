@@ -175,7 +175,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setLikeCount(0);
         article.setViewCount(0);
         article.setRateScore(0.);
-        article.setExcerpt(form.getdd Excerpt());
+        article.setExcerpt(form.getExcerpt());
         article.setFromUser(user);
 
         article = articleDao.save(article);
@@ -312,7 +312,6 @@ public class ArticleServiceImpl implements ArticleService {
         reply.getFromUser().setProfile(profileDao.findByUserId(new User().setId(form.getFromUser())));
 
         return reply;
-
     }
 
     @Override

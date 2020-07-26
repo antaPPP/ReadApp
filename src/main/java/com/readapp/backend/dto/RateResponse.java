@@ -10,11 +10,23 @@ public class RateResponse {
 
     private Double currentScore;
 
+    private ArticleResponse article;
+
     public RateResponse(){}
 
     public RateResponse(Rate rate) {
         this.id = String.valueOf(rate.getId());
         this.score = rate.getScore();
+        this.article = new ArticleResponse(rate.getToArticle()).setContent(null);
+    }
+
+    public ArticleResponse getArticle() {
+        return article;
+    }
+
+    public RateResponse setArticle(ArticleResponse article) {
+        this.article = article;
+        return this;
     }
 
     public Double getCurrentScore() {

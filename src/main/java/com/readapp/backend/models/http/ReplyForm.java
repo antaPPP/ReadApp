@@ -5,9 +5,19 @@ public class ReplyForm {
     private String content;
     private Long toReply;
     private Long toComment;
+    private Long toRecentActivity;
 
     public ReplyForm(){
 
+    }
+
+    public Long getToRecentActivity() {
+        return toRecentActivity;
+    }
+
+    public ReplyForm setToRecentActivity(Long toRecentActivity) {
+        this.toRecentActivity = toRecentActivity;
+        return this;
     }
 
     public Long getFromUser() {

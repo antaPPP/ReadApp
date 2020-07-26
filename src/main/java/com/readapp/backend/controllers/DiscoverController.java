@@ -7,10 +7,7 @@ import com.readapp.backend.services.RecentActivityService;
 import com.readapp.backend.utils.JWTUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class DiscoverController {
@@ -21,17 +18,45 @@ public class DiscoverController {
     @RequiresAuthentication
     @AutoRefreshToken
     public Response getRecentActivities(@RequestHeader("Authorization")String Authorization,
-                                        @RequestParam("cursorAt") Long cursorAt,
                                         @RequestParam("page") int page,
                                         @RequestParam("capacity") int capacity) {
         try {
             Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
-            return null;
+            return Response.success(recentActivityService.getRecentActivities(uid, page, capacity));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }
     }
 
+    @PostMapping(value = "/recent_activity/like")
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response addRecentActivityLike(@RequestHeader("Authorization") String Authorization,
+                                          @RequestParam("id") Long id) {
+        try {
+            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+            recentActivityService.addRecentActivityLike(uid, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+        return Response.success(null);
+    }
+
+    @DeleteMapping(value = "/recent_activity/like")
+    @RequiresAuthentication
+    @AutoRefreshToken
+    public Response deleteRecentActivityLike(@RequestHeader("Authorization") String Authorization,
+                                             @RequestParam("id") Long id) {
+        try {
+            Long uid = Long.parseLong(JWTUtil.getUserId(Authorization));
+            recentActivityService.deleteRecentActivityLike(uid, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.simple(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
+        return Response.success(null);
+    }
 
 }
