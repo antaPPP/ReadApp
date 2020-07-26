@@ -18,6 +18,8 @@ import java.util.concurrent.Future;
 @SuppressWarnings("all")
 public class SMSUtils {
 
+
+
     public static Future<String> sendVerificationSMS(SMSForm form) {
         System.out.println(AliyunConfig.ACCESS_KEY_ID);
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", AliyunConfig.ACCESS_KEY_ID, AliyunConfig.ACCESS_KEY_SECRET);
@@ -34,6 +36,7 @@ public class SMSUtils {
         request.putQueryParameter("TemplateCode", AliyunConfig.VERIFICATION_SMS_TEMPLATE);
         request.putQueryParameter("TemplateParam", "{\"code\":" + "\"" + form.getCode() + "\"" +
                 "}");
+        /*
         try {
             CommonResponse response = client.getCommonResponse(request);
             System.out.println(response.getData());
@@ -44,9 +47,11 @@ public class SMSUtils {
             e.printStackTrace();
             return new AsyncResult<>("SMS failed due to Client Exception");
         }
+         */
 
         return new AsyncResult<>("SMS sent");
     }
+
 
     public static void sendMilteaMessage() {
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", AliyunConfig.ACCESS_KEY_ID, AliyunConfig.ACCESS_KEY_SECRET);

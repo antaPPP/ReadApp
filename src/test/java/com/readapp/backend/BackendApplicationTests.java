@@ -51,6 +51,8 @@ class BackendApplicationTests {
     ArticleDao articleDao;
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    ForgetPasswordService forgetPasswordService;
 
     @Test
     void contextLoads() {
@@ -230,6 +232,21 @@ class BackendApplicationTests {
             map.put("code", -1);
             map.put("msg", "清理全局缓存失败");
         }
+    }
+
+    @Test
+    void testFP() throws Exception {
+        User user = new User();
+        user.setPassword("33402488");
+        user.setCountryCode("3");
+        user.setMobile("34");
+        System.out.println(user.getPassword());
+        System.out.println(user.getCountryCode());
+        System.out.println(user.getMobile());
+        userDao.save(user);
+
+        user = forgetPasswordService.setNewPassword("3", "34", "12345");
+        System.out.println(user.getPassword());
     }
 
 }
